@@ -42,20 +42,20 @@ public class CoinDrop : MonoBehaviour
     }
 
     public double CoinsPerDrop() {
-        double d = 1 + 0.01d * dropCount;
+        double d = 1 + (0.01d * dropCount);
         if (player.purchasedUpgrade[45])
             d *= multi.diamondCoinMulti;
         if (player.purchasedUpgrade[46])
-            d *= player.level * 0.001 + 1;
+            d *= 1 + (player.level * 0.001);
         if (player.purchasedUpgrade[47] && convertCoins)
             d *= ConvertMultiplier();
         return d;
     }
 
     public double ConvertMultiplier() {
-        double d = 1 + Math.Log10(player.coins) / 100;
+        double d = 1 + (Math.Log10(player.coins) / 100);
         if (player.purchasedUpgrade[54])
-            d *= 1 + Math.Log10(player.clickpoints) / 50;
+            d *= 1 + (Math.Log10(player.clickpoints) / 50);
         return d;
     }
 
@@ -64,7 +64,7 @@ public class CoinDrop : MonoBehaviour
         if (player.devMode)
             f /= 10f;
         if (player.purchasedUpgrade[29])
-            f /= 1 + Mathf.Min(player.level,900) / 100f;
+            f /= 1 + (Mathf.Min(player.level,900) / 100f);
         return f;
     }
 
@@ -136,7 +136,7 @@ public class CoinDrop : MonoBehaviour
 
         Rigidbody2D rigidbody = coinObject.GetComponent<Rigidbody2D>();
         if (player.purchasedUpgrade[35])
-            rigidbody.gravityScale /= Mathf.Min(Convert.ToSingle(Math.Log10(player.coins + 1)) * 0.01f + 1f, 2f);
+            rigidbody.gravityScale /= Mathf.Min((Convert.ToSingle(Math.Log10(player.coins + 1)) * 0.01f) + 1f, 2f);
 
         if (options.bell)
             coinDropDing.Play();

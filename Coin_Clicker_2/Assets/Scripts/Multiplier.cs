@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Multiplier : MonoBehaviour {
-
     public static Multiplier instance;
 
     public Player player;
@@ -24,9 +23,9 @@ public class Multiplier : MonoBehaviour {
     }
     public double multiplier {
         get {
-            double d = 1 + (Level+freeLevels) * 0.2;
+            double d = 1 + ((Level+freeLevels) * 0.2);
             if (player.purchasedUpgrade[13])
-                d *= 1 + player.level / 100d;
+                d *= 1 + (player.level / 100d);
             if (player.purchasedUpgrade[21])
                 d *= 1 + Math.Pow(Math.Log10(auto.bonus + 1), 3);
             return d;
@@ -72,11 +71,6 @@ public class Multiplier : MonoBehaviour {
         costDisplay.text = NumberFormatter.instance.FormatNumber(cost);
         multiplierDisplay.text = multiplier.ToString("N1") + "x coins from clicks";
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void Upgrade() {
         if (player.coins >= cost) {

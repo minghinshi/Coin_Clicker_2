@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
-
     public static Player instance;
 
     private Multiplier multi;
@@ -20,7 +19,7 @@ public class Player : MonoBehaviour {
             if (purchasedUpgrade[1])
                 d += clickpoints * 0.01;
             if (purchasedUpgrade[4])
-                d *= 1 + 0.25 * level;
+                d *= 1 + (level * 0.25);
             d *= multi.coinMulti;
             if(purchasedUpgrade[18])
                 d *= 1 + autoclicker.bonus;
@@ -58,7 +57,7 @@ public class Player : MonoBehaviour {
             if (purchasedUpgrade[33] && autoclicker.surgeTimeRemaining > 0f)
                 d *= 1 + (autoclicker.surgeTimeRemaining * 0.01);
             if (purchasedUpgrade[42])
-                d *= 1 + diamondCoins * 0.01;
+                d *= 1 + (diamondCoins * 0.01);
             return d;
         }
     }
@@ -152,13 +151,6 @@ public class Player : MonoBehaviour {
         SaveLoad.instance.LoadGameData();
     }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
-
     public void UpdateDisplays() {
         coinsDisplay.text = NumberFormatter.instance.FormatNumber(coins);
         if(purchasedUpgrade[0])
