@@ -22,13 +22,13 @@ public class Autoclicker : MonoBehaviour
         {
             double d = Level + 1;
             if (player.purchasedUpgrade[24])
-                d += multi.Level * 0.2;
+                d += multi.Level * 0.1;
             if (clicker.coinIsHeld && player.purchasedUpgrade[17])
-                d *= 2;
+                d *= 1.15;
             if (surgeTimeRemaining > 0)
                 d *= 2;
             if (player.purchasedUpgrade[22])
-                d *= 1 + player.level / 100d;
+                d *= 1 + player.level * 0.0015;
             if (player.devMode)
                 d *= 10;
             return d;
@@ -47,16 +47,16 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = Math.Pow(2, level) * 100;
+            double d = Math.Pow(2, level) * 8;
             return d;
         }
     }
     public double bonus;
     public double BonusIncrease()
     {
-        double d = 0.0001;
+        double d = 2.5e-6;
         if (player.purchasedUpgrade[23])
-            d *= 1 + Math.Log10(player.coins + 1) * 0.05;
+            d += Math.Log10(player.coins + 1) * 6.25e-8;
         return d;
     }
 

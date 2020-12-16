@@ -11,40 +11,40 @@ public class Multiplier : MonoBehaviour {
     public Autoclicker auto;
     public DiamondUpgrades diamond;
 
-    public double cost {
+    public double Cost {
         get {
-            double d = Math.Pow(2, level) * 1000000;
+            double d = Math.Pow(2, level) * 1000;
             if (player.purchasedUpgrade[12])
-                d = Math.Pow(1.5, level) * 1000000;
+                d = Math.Pow(1.65, level) * 1000;
             if (player.purchasedUpgrade[14])
-                d /= Math.Sqrt(player.clickpoints+1);
-            return d;
-        }
-    }
-    public double multiplier {
-        get {
-            double d = 1 + ((Level+freeLevels) * 0.2);
-            if (player.purchasedUpgrade[13])
-                d *= 1 + (player.level / 100d);
-            if (player.purchasedUpgrade[21])
-                d *= 1 + Math.Pow(Math.Log10(auto.bonus + 1), 3);
+                d /= Math.Pow(player.clickpoints, 0.15);
             return d;
         }
     }
 
-    public double diamondCoinMulti {
+    public double GetMultiplier()
+    {
+        double d = 1 + ((Level + freeLevels) * 0.15);
+        if (player.purchasedUpgrade[13])
+            d *= 1 + player.level * 0.0025;
+        if (player.purchasedUpgrade[21])
+            d *= 1 + auto.bonus;
+        return d;
+    }
+
+    public double DiamondCoinMulti {
         get
         {
-            return Math.Pow(multiplier,0.05);
+            return Math.Pow(GetMultiplier(), 0.05);
         }
     }
 
-    public double coinMulti {
+    public double CoinMulti {
         get
         {
             if (player.purchasedUpgrade[10])
-                return Math.Pow(multiplier, 2);
-            return multiplier;
+                return GetMultiplier() * ((GetMultiplier() - 1) * 0.2 + 1);
+            return GetMultiplier();
         }
     }
 
@@ -68,13 +68,13 @@ public class Multiplier : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        costDisplay.text = NumberFormatter.instance.FormatNumber(cost);
-        multiplierDisplay.text = multiplier.ToString("N1") + "x coins from clicks";
+        costDisplay.text = NumberFormatter.instance.FormatNumber(Cost);
+        multiplierDisplay.text = GetMultiplier().ToString("N1") + "x coins from clicks";
     }
 
     public void Upgrade() {
-        if (player.coins >= cost) {
-            player.coins -= cost;
+        if (player.coins >= Cost) {
+            player.coins -= Cost;
             level++;
 
             player.UpdateDisplays();
@@ -83,27 +83,22 @@ public class Multiplier : MonoBehaviour {
     }
 
     public void UpdateDisplays() {
-        costDisplay.text = NumberFormatter.instance.FormatNumber(cost);
+        costDisplay.text = NumberFormatter.instance.FormatNumber(Cost);
         levelDisplay.text = "Level " + (Level+freeLevels).ToString("N0");
         levelSourceDisplay.text = level.ToString("N0") + " levels from upgrading";
         if (freeLevels > 0)
             levelSourceDisplay.text += "\n" + freeLevels.ToString("N0") + " free levels from dropping coins";
         if (diamond.diamondMultiLevels > 0)
             levelSourceDisplay.text += "\n" + diamond.diamondMultiLevels.ToString("N0") + " levels from diamond upgrade";
-        string multiplierText;
-        if (coinMulti >= 1000000)
-            multiplierText = NumberFormatter.instance.FormatNumber(coinMulti);
-        else
-            multiplierText = coinMulti.ToString("N1");
 
-        multiplierDisplay.text = multiplierText + "x coins from clicks";
+        multiplierDisplay.text = CoinMulti.ToString("N2") + "x coins";
         if (player.purchasedUpgrade[9])
-            multiplierDisplay.text += "\n" + multiplier.ToString("N1") + "x clickpoints";
+            multiplierDisplay.text += "\n" + ((GetMultiplier() - 1) * 0.2 + 1).ToString("N2") + "x clickpoints";
         if (player.purchasedUpgrade[11])
-            multiplierDisplay.text += "\n" + multiplier.ToString("N1") + "x experience";
-        if (player.purchasedUpgrade[31] && Level >= 100)
-            multiplierDisplay.text += "\n" + Mathf.FloorToInt(Level / 100f).ToString("N0") + " extra coin(s)";
+            multiplierDisplay.text += "\n" + ((GetMultiplier() - 1) * 0.2 + 1).ToString("N2") + "x experience";
+        if (player.purchasedUpgrade[31])
+            multiplierDisplay.text += "\n+" + (Level * 0.75f).ToString("N1") + "% extra coin chance";
         if (player.purchasedUpgrade[45])
-            multiplierDisplay.text += "\n" + diamondCoinMulti.ToString("N3") + "x diamond coins";
+            multiplierDisplay.text += "\n" + DiamondCoinMulti.ToString("N3") + "x diamond coins";
     }
 }

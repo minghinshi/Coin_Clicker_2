@@ -26,11 +26,6 @@ public class Upgrades : MonoBehaviour {
 
         costDisplay.text = NumberFormatter.instance.FormatNumber(cost);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void Purchase() {
         if (player.coins >= cost && currency == UpgradeCurrencies.coins) {

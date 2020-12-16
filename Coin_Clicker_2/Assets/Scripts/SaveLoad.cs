@@ -18,9 +18,6 @@ public class SaveLoad : MonoBehaviour
     public ProgressBar progressBar;
     public Options options;
 
-    public Animator anim;
-    public Text SavingText;
-
     private void Awake()
     {
         instance = this;
@@ -35,7 +32,6 @@ public class SaveLoad : MonoBehaviour
         timeUntilSave -= Time.deltaTime;
         if (timeUntilSave <= 0f)
             SaveGameData();
-        SavingText.text = "Save game (Autosaves in " + Mathf.CeilToInt(timeUntilSave).ToString("N0") + "s)";
     }
 
     public static string Load(string key, string defaultData) {
@@ -94,7 +90,6 @@ public class SaveLoad : MonoBehaviour
         Save("UseLogarithm", options.useLogarithm.ToString());
         Save("FormatSmallNumbers", options.formatSmallNumbers.ToString());
 
-        anim.SetTrigger("SavedGame");
         timeUntilSave = 60f;
     }
 
@@ -114,7 +109,7 @@ public class SaveLoad : MonoBehaviour
         player.coins = double.Parse(Load("Coins", "0"));
         player.clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
-        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "10000"));
+        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
         player.level = int.Parse(Load("Level", "0"));
         autoclicker.level = int.Parse(Load("AutoclickerLevel", "0"));

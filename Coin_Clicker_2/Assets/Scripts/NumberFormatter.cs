@@ -15,18 +15,18 @@ public class NumberFormatter : MonoBehaviour {
     }
 
     public string FormatNumber(double number) {
-        if (number < 1000000)
-            return number.ToString("N0");
+        if (number < 1000)
+            return number.ToString("N2");
         else if (number < 1e66 && !options.formatSmallNumbers)
         {
             int magnitude = Convert.ToInt32(Math.Floor(Math.Log10(number)));
-            string suffix = suffixes[Mathf.FloorToInt((magnitude - 6) / 3f)];
+            string suffix = suffixes[Mathf.FloorToInt((magnitude - 3) / 3f)];
 
-            int decimalPlacesAmount = 2 - (magnitude % 3);
+            int decimalPlacesAmount = 3 - (magnitude % 3);
             string decimalPlaces = "";
             for (int i = 0; i < decimalPlacesAmount; i++)
             {
-                decimalPlaces += "#";
+                decimalPlaces += "0";
             }
 
             return (number / Math.Pow(10, magnitude - magnitude % 3)).ToString("0." + decimalPlaces) + " " + suffix;

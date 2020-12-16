@@ -29,14 +29,14 @@ public class CoinDrop : MonoBehaviour
     public Color PlatinumColor;
 
     public double CoinDropMultiplier() {
-        double d = 1000;
+        double d = 160;
         if (player.purchasedUpgrade[26]) {
-            double clicksPerMin = auto.clicksPerSec * 60;
+            double clicks = auto.clicksPerSec * 7.5;
             if (clicker.coinIsHeld && player.purchasedUpgrade[16])
-                clicksPerMin /= 2;
+                clicks /= 1.15;
             if (auto.surgeTimeRemaining > 0)
-                clicksPerMin /= 2;
-            d += clicksPerMin;
+                clicks /= 2;
+            d += clicks;
         }
         return d;
     }
@@ -44,7 +44,7 @@ public class CoinDrop : MonoBehaviour
     public double CoinsPerDrop() {
         double d = 1 + (0.01d * dropCount);
         if (player.purchasedUpgrade[45])
-            d *= multi.diamondCoinMulti;
+            d *= multi.DiamondCoinMulti;
         if (player.purchasedUpgrade[46])
             d *= 1 + (player.level * 0.001);
         if (player.purchasedUpgrade[47] && convertCoins)
@@ -53,9 +53,9 @@ public class CoinDrop : MonoBehaviour
     }
 
     public double ConvertMultiplier() {
-        double d = 1 + (Math.Log10(player.coins) / 100);
+        double d = 1 + (Math.Log10(player.coins) * 0.0225);
         if (player.purchasedUpgrade[54])
-            d *= 1 + (Math.Log10(player.clickpoints) / 50);
+            d *= 1 + (Math.Log10(player.clickpoints) * 0.03);
         return d;
     }
 
@@ -64,18 +64,21 @@ public class CoinDrop : MonoBehaviour
         if (player.devMode)
             f /= 10f;
         if (player.purchasedUpgrade[29])
-            f /= 1 + (Mathf.Min(player.level,900) / 100f);
+            f /= 1 + player.level / 600f;
         return f;
     }
 
     public int dropsLeft;
     public int TotalDrops() {
         int i = 1;
+        float chance = 0f;
         if (player.purchasedUpgrade[27]) {
-            i += Mathf.FloorToInt((float)Math.Log(player.clickpoints+1, 1000000));
+            chance += Convert.ToSingle(Math.Log10(player.clickpoints + 1) * 0.03);
         }
         if (player.purchasedUpgrade[31])
-            i += Mathf.FloorToInt(multi.Level / 100f);
+            chance += multi.Level * 0.0075f;
+        if (UnityEngine.Random.Range(0f, 1f) < chance)
+            i++;
         return i;
     }
 
@@ -122,9 +125,9 @@ public class CoinDrop : MonoBehaviour
             }
         }
         if (!convertCoins)
-            convertText.text = "Convert disabled";
+            convertText.text = "Sacrifice disabled";
         else
-            convertText.text = "Convert enabled\n" + ConvertMultiplier().ToString("N2") + "x diamond coins";
+            convertText.text = "Sacrifice enabled\n" + ConvertMultiplier().ToString("N2") + "x diamond coins";
     }
 
     public void Drop() {
@@ -136,7 +139,7 @@ public class CoinDrop : MonoBehaviour
 
         Rigidbody2D rigidbody = coinObject.GetComponent<Rigidbody2D>();
         if (player.purchasedUpgrade[35])
-            rigidbody.gravityScale /= Mathf.Min((Convert.ToSingle(Math.Log10(player.coins + 1)) * 0.01f) + 1f, 2f);
+            rigidbody.gravityScale /= Convert.ToSingle(Math.Log10(player.coins + 1) * 0.025 + 1);
 
         if (options.bell)
             coinDropDing.Play();
@@ -149,10 +152,10 @@ public class CoinDrop : MonoBehaviour
 
     public void OnCoinClick(GameObject coinObject) {
         if (player.purchasedUpgrade[28])
-            auto.surgeTimeRemaining += 10f;
+            auto.surgeTimeRemaining += 12f;
         if (player.purchasedUpgrade[30])
-            player.experienceNeededToLevelUp *= 0.9;
-        if (player.purchasedUpgrade[34])
+            player.experienceNeededToLevelUp *= 0.985;
+        if (player.purchasedUpgrade[34] && UnityEngine.Random.Range(0f,1f) < 0.07f)
             multi.freeLevels++;
 
         if (player.purchasedUpgrade[36])

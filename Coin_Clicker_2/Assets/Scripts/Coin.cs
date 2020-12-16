@@ -15,7 +15,7 @@ public class Coin : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (transform.position.y <= -25f) {
+        if (transform.position.y <= 85f) {
             GameObject Display = Instantiate(DisplayPrefab, transform.position, Quaternion.identity, transform.parent);
             Display.GetComponent<CoinDisplay>().display.text = NumberFormatter.instance.FormatNumber(coinValue);
 

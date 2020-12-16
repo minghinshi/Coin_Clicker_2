@@ -17,17 +17,17 @@ public class Player : MonoBehaviour {
         get {
             double d = 1;
             if (purchasedUpgrade[1])
-                d += clickpoints * 0.01;
+                d *= 1 + Math.Log10(clickpoints + 1) * 0.1;
             if (purchasedUpgrade[4])
-                d *= 1 + (level * 0.25);
-            d *= multi.coinMulti;
+                d *= 1 + level * 0.03;
             if(purchasedUpgrade[18])
                 d *= 1 + autoclicker.bonus;
             if (purchasedUpgrade[32] && autoclicker.surgeTimeRemaining > 0f)
-                d *= 1 + (autoclicker.surgeTimeRemaining * 0.01);
+                d *= 1 + (autoclicker.surgeTimeRemaining * 0.05);
             d *= progressBar.TotalMulti();
             if (purchasedUpgrade[51])
                 d *= progressBar.barMulti[0];
+            d *= multi.CoinMulti;
             return d;
         }
     }
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
         {
             double d = 0;
             if (purchasedUpgrade[41])
-                d = experiencePerClick * diamondCoins * 0.01;
+                d = experiencePerClick * diamondCoins * 0.000225;
             return d;
         }
     }
@@ -46,18 +46,18 @@ public class Player : MonoBehaviour {
         get
         {
             double d = 1;
-            if (purchasedUpgrade[2])
-                d += Math.Pow(Math.Max(coins,1), 0.1) - 1;
             if (purchasedUpgrade[6])
-                d += level;
+                d *= 1 + level * 0.015;
+            if (purchasedUpgrade[2])
+                d *= 1 + Math.Log10(coins + 1) * 0.1;
             if (purchasedUpgrade[9])
-                d *= multi.multiplier;
-            if(purchasedUpgrade[19])
+                d *= ((multi.GetMultiplier() - 1) * 0.2 + 1);
+            if (purchasedUpgrade[19])
                 d *= 1 + autoclicker.bonus;
             if (purchasedUpgrade[33] && autoclicker.surgeTimeRemaining > 0f)
-                d *= 1 + (autoclicker.surgeTimeRemaining * 0.01);
+                d *= 1 + (autoclicker.surgeTimeRemaining * 0.05);
             if (purchasedUpgrade[42])
-                d *= 1 + (diamondCoins * 0.01);
+                d *= 1 + (diamondCoins * 0.0015);
             return d;
         }
     }
@@ -78,11 +78,11 @@ public class Player : MonoBehaviour {
         {
             double d = coinsPerClick;
             if (purchasedUpgrade[5])
-                d += clickpoints * 0.01;
-            if(purchasedUpgrade[7])
-                d *= Math.Pow(Math.Max(coins, 1), 0.1);
+                d += clickpoints / 10000;
+            if (purchasedUpgrade[7])
+                d *= 1 + Math.Log10(coins + 1) * 0.05;
             if (purchasedUpgrade[11])
-                d *= multi.multiplier;
+                d *= ((multi.GetMultiplier() - 1) * 0.2 + 1);
             if (purchasedUpgrade[20])
                 d *= 1 + autoclicker.bonus;
             return d;
@@ -94,6 +94,7 @@ public class Player : MonoBehaviour {
     public double diamondCoins;
 
     public bool[] purchasedUpgrade;
+    public float timeSinceLastUpgrade;
 
     public Text coinsDisplay;
     public Text clickpointsDisplay;
@@ -221,11 +222,9 @@ public class Player : MonoBehaviour {
 
     void LevelUp() {
         experience -= experienceNeededToLevelUp;
-        coins += experienceNeededToLevelUp;
-        if (purchasedUpgrade[43])
-            experienceNeededToLevelUp *= Math.Pow(2, 1/Math.Log10(diamondCoins + 10));
-        else
-            experienceNeededToLevelUp *= 2;
+        coins += experienceNeededToLevelUp * 0.15;
+        if (!(purchasedUpgrade[43] && UnityEngine.Random.Range(0f, 1f) < (Math.Log10(diamondCoins + 1) * 0.1)))
+            experienceNeededToLevelUp *= 1.15;
         level++;
         UpdateDisplays();
     }

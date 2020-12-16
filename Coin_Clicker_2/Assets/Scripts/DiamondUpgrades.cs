@@ -15,7 +15,7 @@ public class DiamondUpgrades : MonoBehaviour
         {
             if (diamondAutoLevels >= 999)
                 return (diamondAutoLevels * 0.1 + 0.1) * 10;
-            return diamondAutoLevels * 0.1 + 0.1;
+            return diamondAutoLevels * 5 + 30;
         }
     }
 
@@ -25,7 +25,7 @@ public class DiamondUpgrades : MonoBehaviour
         {
             if (diamondMultiLevels >= 999)
                 return (diamondMultiLevels * 0.1 + 0.1) * 10;
-            return diamondMultiLevels * 0.1 + 0.1;
+            return diamondMultiLevels * 4 + 24;
         }
     }
 
@@ -35,7 +35,7 @@ public class DiamondUpgrades : MonoBehaviour
         {
             if (dropPurchases >= 999)
                 return (dropPurchases * 0.1 + 0.1) * 10;
-            return dropPurchases * 0.1 + 0.1;
+            return dropPurchases + 6;
         }
     }
 
@@ -63,11 +63,11 @@ public class DiamondUpgrades : MonoBehaviour
     void Update()
     {
         if (player.purchasedUpgrade[37])
-            AutoPriceDisplay.text = autoPrice.ToString("#,##0.#");
+            AutoPriceDisplay.text = autoPrice.ToString("N0");
         if (player.purchasedUpgrade[38])
-            MultiPriceDisplay.text = multiPrice.ToString("#,##0.#");
+            MultiPriceDisplay.text = multiPrice.ToString("N0");
         if (player.purchasedUpgrade[39])
-            DropPriceDisplay.text = dropPrice.ToString("#,##0.#");
+            DropPriceDisplay.text = dropPrice.ToString("N0");
     }
 
     public void BuyAuto() {

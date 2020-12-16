@@ -57,7 +57,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 GameObject coin = Instantiate(coinPrefab, transform.position + new Vector3(Random.Range(-50f, 50f), Random.Range(-50f, 50f)), Quaternion.identity, player.ParticleHolder);
                 Rigidbody2D rigidbody = coin.GetComponent<Rigidbody2D>();
-                rigidbody.velocity = new Vector2(Random.Range(-500f, 500f), Random.Range(1000f, 1250f));
+                rigidbody.velocity = new Vector2(Random.Range(-500f, 500f), Random.Range(850f, 1000f));
                 coin.GetComponent<Coin>().coinValue = (player.coinsPerClick + player.bonusCoinsPerClick) * overflowBonus;
             }
 
