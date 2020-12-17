@@ -90,6 +90,8 @@ public class Player : MonoBehaviour {
     }
     public double experienceNeededToLevelUp;
     public int level;
+    public int numberOfPurchasedUpgrades;
+    public int numberOfManualClicks;
 
     public double diamondCoins;
 

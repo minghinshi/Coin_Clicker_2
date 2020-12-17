@@ -47,6 +47,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         coinIsHeld = false;
         Click(1);
+        player.numberOfManualClicks++;
     }
 
     public void Click(double overflowBonus) {

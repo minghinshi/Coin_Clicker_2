@@ -1,16 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class NavigationTab : MonoBehaviour
+public class NavigationButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public CanvasGroup targetPanel;
-    public CanvasGroup[] allPanels;
+    CanvasGroup[] allPanels;
+    public int tooltipType;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        allPanels = NavigationBar.instance.panelsToNavigate;
     }
 
     // Update is called once per frame
@@ -28,5 +30,13 @@ public class NavigationTab : MonoBehaviour
         targetPanel.alpha = 1;
         targetPanel.blocksRaycasts = true;
         targetPanel.interactable = true;
+    }
+
+    void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData) {
+        Tooltip.instance.SetNavigationTooltip(tooltipType);
+    }
+
+    void IPointerExitHandler.OnPointerExit(PointerEventData eventData) {
+        Tooltip.instance.ClearText();
     }
 }

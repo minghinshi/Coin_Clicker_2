@@ -103,6 +103,7 @@ public class Upgrades : MonoBehaviour {
                 break;
         }
         player.purchasedUpgrade[id] = true;
+        player.numberOfPurchasedUpgrades++;
         if(upgradeBox)
             upgradeBox.color = new Color(0.3f, 1f, 0.3f);
         player.UpdateDisplays();
