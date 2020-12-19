@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public enum UpgradeCurrencies { coins, clickpoints, diamondCoins }
 
@@ -13,6 +14,7 @@ public class Upgrades : MonoBehaviour {
 
     public int id;
     public double cost;
+    public bool isPurchased;
     public UpgradeCurrencies currency;
 
     public Text costDisplay;
@@ -102,12 +104,26 @@ public class Upgrades : MonoBehaviour {
                 player.winText.gameObject.SetActive(true);
                 break;
         }
-        player.purchasedUpgrade[id] = true;
-        player.numberOfPurchasedUpgrades++;
+        isPurchased = true;
         if(upgradeBox)
             upgradeBox.color = new Color(0.3f, 1f, 0.3f);
         player.UpdateDisplays();
-        gameObject.SetActive(false);
+    }
+
+    public double Effect() {
+        if (!isPurchased)
+            return 1;
+        switch (id) {
+            case 1:
+                return 1 + Math.Log10(player.clickpoints + 1) * 0.1;
+            case 4:
+                return 1 + player.level * 0.03;
+            case 18:
+                return 1 + autoclicker.bonus;
+
+            default:
+                return 1;
+        }
     }
 
     public void UpdateDisplay() {

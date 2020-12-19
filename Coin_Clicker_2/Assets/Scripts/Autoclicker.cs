@@ -114,8 +114,11 @@ public class Autoclicker : MonoBehaviour
                 surgeTimeRemaining -= Time.deltaTime;
                 surgeDisplay.text = "Autoclicker (" + surgeTimeRemaining.ToString("N1") + "s)";
             }
-            else
+            if (surgeTimeRemaining <= 0)
+            {
+                surgeTimeRemaining = 0;
                 surgeDisplay.text = "Autoclicker";
+            }
         }
         if (player.purchasedUpgrade[44])
             if (UnityEngine.Random.Range(0f, 1f) < 1 - Mathf.Pow(0.9999f, Convert.ToSingle(clickOverflowBonus)))

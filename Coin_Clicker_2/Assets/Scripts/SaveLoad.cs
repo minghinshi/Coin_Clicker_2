@@ -95,7 +95,7 @@ public class SaveLoad : MonoBehaviour
         Save("FormatSmallNumbers", options.formatSmallNumbers.ToString());
 
         //Optional Stats (Does not affect gameplay)
-        Save("ManualClicks", player.numberOfManualClicks.ToString());
+        //Insert Stats Here...
 
         timeUntilSave = 60f;
     }
@@ -154,7 +154,7 @@ public class SaveLoad : MonoBehaviour
         options.UpdateOptions();
 
         //Optional Stats (Does not affect gameplay)
-        player.numberOfManualClicks = int.Parse(Load("ManualClicks", "0"));
+        //Insert Stats Here...
     }
 }
 

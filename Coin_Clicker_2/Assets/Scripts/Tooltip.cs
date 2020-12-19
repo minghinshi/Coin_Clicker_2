@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class Tooltip : MonoBehaviour
 {
     RectTransform rectTransform;
     Player player;
-    Multiplier multiplayer;
+    Multiplier multi;
     Autoclicker autoclicker;
+    ProgressBar progressBar;
     Text tooltipText;
     public static Tooltip instance;
 
@@ -21,8 +23,9 @@ public class Tooltip : MonoBehaviour
     void Start()
     {
         player = Player.instance;
-        multiplayer = Multiplier.instance;
+        multi = Multiplier.instance;
         autoclicker = Autoclicker.instance;
+        progressBar = ProgressBar.instance;
         rectTransform = GetComponent<RectTransform>();
         tooltipText = transform.GetChild(0).GetComponent<Text>();
     }
@@ -53,20 +56,18 @@ public class Tooltip : MonoBehaviour
         List<object> objects = new List<object>();
         switch (i) {
             case 0:
-                stringToDisplay = "Clicker\n\n<color=lime>{0}</color> Manual Clicks";
-                objects.Add(player.numberOfManualClicks);
+                stringToDisplay = "Clicker";
                 break;
             case 1:
-                stringToDisplay = "Upgrades\n\n<color=lime>{0}</color> Upgrades Purchased";
-                objects.Add(player.numberOfPurchasedUpgrades);
+                stringToDisplay = "Upgrades";
                 break;
             case 2:
                 stringToDisplay = "Booster\n\n<color=lime>{0}</color> Total Levels";
-                objects.Add(multiplayer.Level + multiplayer.freeLevels);
-                objects.Add(multiplayer.level);
+                objects.Add(multi.Level + multi.freeLevels);
+                objects.Add(multi.level);
                 if (player.purchasedUpgrade[34]) {
                     stringToDisplay += "\n<color=lime>{1}</color> Purchased\n<color=lime>{2}</color> From Dropping Coins";
-                    objects.Add(multiplayer.freeLevels);
+                    objects.Add(multi.freeLevels);
                 }
                 break;
             case 3:
@@ -87,6 +88,34 @@ public class Tooltip : MonoBehaviour
                 break;
         }
         SetText(stringToDisplay, objects.ToArray());
+    }
+
+    public void SetCoinsTooltip() {
+        string stringToDisplay = "Coins";
+        List<object> objects = new List<object>();
+
+        if (player.purchasedUpgrade[1])
+        {
+            objects.Add(1 + Math.Log10(player.clickpoints + 1) * 0.1);
+        }
+        if (player.purchasedUpgrade[4])
+        {
+            objects.Add(1 + player.level * 0.03);
+        }
+        if (player.purchasedUpgrade[18])
+        {
+            objects.Add(1 + autoclicker.bonus);
+        }
+        if (player.purchasedUpgrade[32] && autoclicker.surgeTimeRemaining > 0f)
+        {
+            objects.Add(1 + (autoclicker.surgeTimeRemaining * 0.05));
+        }
+        objects.Add(progressBar.TotalMulti());
+        if (player.purchasedUpgrade[51])
+        {
+            objects.Add(progressBar.barMulti[0]);
+        }
+        objects.Add(multi.CoinMulti);
     }
 
     public void ClearText() {
