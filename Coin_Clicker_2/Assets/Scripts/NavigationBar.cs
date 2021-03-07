@@ -6,7 +6,7 @@ public class NavigationBar : MonoBehaviour
 {
     public static NavigationBar instance;
     public CanvasGroup[] panelsToNavigate;
-    GameObject mainScreen;
+    public GameObject mainScreen;
 
     private void Awake()
     {
@@ -16,7 +16,6 @@ public class NavigationBar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainScreen = transform.parent.Find("MainScreen").gameObject;
         panelsToNavigate = mainScreen.GetComponentsInChildren<CanvasGroup>();
     }
 

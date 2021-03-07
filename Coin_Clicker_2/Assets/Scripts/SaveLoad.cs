@@ -15,8 +15,9 @@ public class SaveLoad : MonoBehaviour
     public Autoclicker autoclicker;
     public CoinDrop coinDrop;
     public DiamondUpgrades platinum;
-    public ProgressBar progressBar;
+    public ProgressBarHandler progressBar;
     public Options options;
+    private UpgradeHandler upgradeHandler;
 
     private void Awake()
     {
@@ -25,6 +26,8 @@ public class SaveLoad : MonoBehaviour
 
     void Start() {
         player = Player.instance;
+        upgradeHandler = UpgradeHandler.instance;
+        LoadGameData();
     }
 
     private void Update()
@@ -51,13 +54,13 @@ public class SaveLoad : MonoBehaviour
 
     public void SaveGameData() {
         //Upgrades
-        for (int i = 0; i < player.purchasedUpgrade.Length; i++)
-        {
-            Save("Upgrade" + i + "Purchased", player.purchasedUpgrade[i].ToString());
+        foreach (Upgrade upgrade in upgradeHandler.upgrades) {
+            int id = upgrade.id;
+            Save("Upgrade" + id + "Purchased", upgrade.isPurchased.ToString());
         }
 
         //Main Stats (Related to gameplay)
-        Save("Coins", player.coins.ToString("R"));
+        Save("Coins", player.Coins.ToString("R"));
         Save("Level", player.level.ToString());
         Save("Experience", player.Experience.ToString("R"));
         Save("ExperienceReq", player.experienceNeededToLevelUp.ToString("R"));
@@ -102,21 +105,17 @@ public class SaveLoad : MonoBehaviour
 
     public void LoadGameData() {
         //Upgrades
-        for (int i = 0; i < player.purchasedUpgrade.Length; i++)
+        foreach (Upgrade upgrade in upgradeHandler.upgrades)
         {
-            bool purchased = bool.Parse(Load("Upgrade" + i + "Purchased", "FALSE"));
+            int id = upgrade.id;
+            bool purchased = bool.Parse(Load("Upgrade" + id + "Purchased", "FALSE"));
             if (purchased) {
-                foreach (Upgrades upgrade in FindObjectsOfType<Upgrades>()) {
-                    if (upgrade.id == i)
-                    {
-                        upgrade.Upgrade();
-                    }
-                }
+                upgrade.PurchaseUpgrade();
             }
         }
 
         //Main Stats (Related to gameplay)
-        player.coins = double.Parse(Load("Coins", "0"));
+        player.Coins = double.Parse(Load("Coins", "0"));
         player.clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
         player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));

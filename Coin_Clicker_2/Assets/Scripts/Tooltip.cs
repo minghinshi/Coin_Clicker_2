@@ -10,8 +10,9 @@ public class Tooltip : MonoBehaviour
     Player player;
     Multiplier multi;
     Autoclicker autoclicker;
-    ProgressBar progressBar;
+    ProgressBarHandler progressBar;
     Text tooltipText;
+    UpgradeHandler upgradeHandler;
     public static Tooltip instance;
 
     private void Awake()
@@ -25,9 +26,10 @@ public class Tooltip : MonoBehaviour
         player = Player.instance;
         multi = Multiplier.instance;
         autoclicker = Autoclicker.instance;
-        progressBar = ProgressBar.instance;
+        progressBar = ProgressBarHandler.instance;
         rectTransform = GetComponent<RectTransform>();
         tooltipText = transform.GetChild(0).GetComponent<Text>();
+        upgradeHandler = UpgradeHandler.instance;
     }
 
     // Update is called once per frame
@@ -42,76 +44,31 @@ public class Tooltip : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
     }
 
-    public void SetText(string Text, object arg)
-    {
-        SetText(string.Format(Text, arg));
-    }
-
     public void SetText(string Text, params object[] args) {
         SetText(string.Format(Text, args));
     }
 
-    public void SetNavigationTooltip(int i) {
-        string stringToDisplay = "";
-        List<object> objects = new List<object>();
-        switch (i) {
-            case 0:
-                stringToDisplay = "Clicker";
-                break;
-            case 1:
-                stringToDisplay = "Upgrades";
-                break;
-            case 2:
-                stringToDisplay = "Booster\n\n<color=lime>{0}</color> Total Levels";
-                objects.Add(multi.Level + multi.freeLevels);
-                objects.Add(multi.level);
-                if (player.purchasedUpgrade[34]) {
-                    stringToDisplay += "\n<color=lime>{1}</color> Purchased\n<color=lime>{2}</color> From Dropping Coins";
-                    objects.Add(multi.freeLevels);
-                }
-                break;
-            case 3:
-                stringToDisplay = "Autoclicker\n\n<color=lime>{0}</color> Total Levels";
-                objects.Add(autoclicker.Level);
-                break;
-            case 4:
-                stringToDisplay = "Diamond Upgrades";
-                break;
-            case 5:
-                stringToDisplay = "Progress Bars";
-                break;
-            case 6:
-                stringToDisplay = "Options";
-                break;
-            default:
-                stringToDisplay = "<color=red>A tooltip should be here but it is missing. Please report this bug.</color>";
-                break;
-        }
-        SetText(stringToDisplay, objects.ToArray());
-    }
-
     public void SetCoinsTooltip() {
-        string stringToDisplay = "Coins";
         List<object> objects = new List<object>();
 
-        if (player.purchasedUpgrade[1])
+        if (upgradeHandler.IsUpgradePurchased(1))
         {
             objects.Add(1 + Math.Log10(player.clickpoints + 1) * 0.1);
         }
-        if (player.purchasedUpgrade[4])
+        if (upgradeHandler.IsUpgradePurchased(4))
         {
             objects.Add(1 + player.level * 0.03);
         }
-        if (player.purchasedUpgrade[18])
+        if (upgradeHandler.IsUpgradePurchased(18))
         {
             objects.Add(1 + autoclicker.bonus);
         }
-        if (player.purchasedUpgrade[32] && autoclicker.surgeTimeRemaining > 0f)
+        if (upgradeHandler.IsUpgradePurchased(32) && autoclicker.surgeTimeRemaining > 0f)
         {
             objects.Add(1 + (autoclicker.surgeTimeRemaining * 0.05));
         }
-        objects.Add(progressBar.TotalMulti());
-        if (player.purchasedUpgrade[51])
+        objects.Add(progressBar.GetTotalMultiplier());
+        if (upgradeHandler.IsUpgradePurchased(51))
         {
             objects.Add(progressBar.barMulti[0]);
         }

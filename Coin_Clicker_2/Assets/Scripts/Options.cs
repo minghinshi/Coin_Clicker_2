@@ -86,12 +86,6 @@ public class Options : MonoBehaviour
         UpdateOptions();
     }
 
-    void UpdateUpgradeDisplays() {
-        foreach (Upgrades upgrade in FindObjectsOfType<Upgrades>()) {
-            upgrade.UpdateDisplay();
-        }
-    }
-
     public void UpdateOptions() {
         if (music)
             musicText.text = "Music: On";
@@ -126,6 +120,5 @@ public class Options : MonoBehaviour
             formatSmallNumbersText.text = "Format numbers when over 10^6";
         else
             formatSmallNumbersText.text = "Format numbers when over 10^66";
-        UpdateUpgradeDisplays();
     }
 }

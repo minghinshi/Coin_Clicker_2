@@ -13,6 +13,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Multiplier multi;
     private Autoclicker autoclicker;
     private Options options;
+    private UpgradeHandler upgradeHandler;
 
     public AudioSource coinSource;
 
@@ -26,15 +27,16 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     // Use this for initialization
-    void Start () {
+    void Start() {
         player = Player.instance;
         multi = Multiplier.instance;
         autoclicker = Autoclicker.instance;
         options = Options.instance;
+        upgradeHandler = UpgradeHandler.instance;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update() {
 
     }
 
@@ -49,30 +51,27 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Click(1);
     }
 
+    void SpawnCoinParticle(double overflowBonus) {
+        GameObject coin = Instantiate(coinPrefab, transform.position + new Vector3(Random.Range(-50f, 50f), Random.Range(-50f, 50f)), Quaternion.identity, player.ParticleHolder);
+        Rigidbody2D rigidbody = coin.GetComponent<Rigidbody2D>();
+        rigidbody.velocity = new Vector2(Random.Range(-500f, 500f), Random.Range(850f, 1000f));
+        coin.GetComponent<Coin>().coinValue = (player.CoinsPerClick + player.BonusCoinsPerClick) * overflowBonus;
+    }
+
+    void PlayClickSoundEffect() {
+        coinSource.pitch = Random.Range(0.9f, 1.1f);
+        coinSource.Play();
+    }
+
     public void Click(double overflowBonus) {
+        if (options.clickParticles) SpawnCoinParticle(overflowBonus);
+        if (options.sfx) PlayClickSoundEffect();
 
-        if (!player.devMode)
-        {
-            if (options.clickParticles)
-            {
-                GameObject coin = Instantiate(coinPrefab, transform.position + new Vector3(Random.Range(-50f, 50f), Random.Range(-50f, 50f)), Quaternion.identity, player.ParticleHolder);
-                Rigidbody2D rigidbody = coin.GetComponent<Rigidbody2D>();
-                rigidbody.velocity = new Vector2(Random.Range(-500f, 500f), Random.Range(850f, 1000f));
-                coin.GetComponent<Coin>().coinValue = (player.coinsPerClick + player.bonusCoinsPerClick) * overflowBonus;
-            }
-
-            if (options.sfx)
-            {
-                coinSource.pitch = Random.Range(0.9f, 1.1f);
-                coinSource.Play();
-            }
-        }
-
-        player.coins += (player.coinsPerClick + player.bonusCoinsPerClick) * overflowBonus;
-        if(player.purchasedUpgrade[0])
-            player.clickpoints += player.clickpointsPerClick * overflowBonus;
-        if (player.purchasedUpgrade[3])
-            player.Experience += player.experiencePerClick * overflowBonus;
+        player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * overflowBonus;
+        if(upgradeHandler.IsUpgradePurchased(0))
+            player.clickpoints += player.ClickpointsPerClick * overflowBonus;
+        if (upgradeHandler.IsUpgradePurchased(3))
+            player.Experience += player.ExperiencePerClick * overflowBonus;
 
         player.UpdateDisplays();
         multi.UpdateDisplays();
