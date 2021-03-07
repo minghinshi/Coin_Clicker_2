@@ -28,7 +28,7 @@ public class TierHandler : TooltipContentHandler
     public int tier = 0;
     double cost {
         get {
-            return Math.Pow(16, Math.Pow(tier + 1, 2) - 1);
+            return Math.Pow(2, Math.Pow(tier + 1, 2));
         }
     }
     public string[] namesOfItemsToUnlock;
@@ -42,12 +42,15 @@ public class TierHandler : TooltipContentHandler
         upgradeHandler = UpgradeHandler.instance;
         tooltip = Tooltip.instance;
         formatter = NumberFormatter.instance;
+
+        upgradeHandler.UnlockUpgrades(1);
     }
 
     public override void UpdateTooltipText()
     {
         stringToDisplay = "Increase your tier to unlock content\n" +
             "and further boost your coins.\n" +
+            "<color=red>This also doubles your upgrade cost!</color>\n" +
             "<color=lime>Next: Unlock {0}.</color>\n" +
             "<color=yellow>Cost: {1} coins.</color>";
         objects.Add(namesOfItemsToUnlock[tier]);
@@ -55,20 +58,13 @@ public class TierHandler : TooltipContentHandler
     }
 
     public void AttemptPurchase() {
-        if (purchaseHandler.IsAffordable(cost)) PurchaseTier();
+        if (purchaseHandler.IsAffordable(cost)) BuyTier();
     }
 
-    void PurchaseTier() {
-        switch (tier) {
-            case 0:
-            case 1:
-                break;
-            default:
-                print("The content of this tier has not yet been implemented!");
-                break;
-        }
+    public void BuyTier() {
         gameObjectsInTiers[tier].SetGameObjectsAsVisible();
         tier++;
         TierDisplay.text = "Tier " + tier;
+        upgradeHandler.UnlockUpgrades(tier);
     }
 }

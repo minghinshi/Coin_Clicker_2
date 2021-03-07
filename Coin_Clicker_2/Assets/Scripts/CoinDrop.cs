@@ -56,7 +56,7 @@ public class CoinDrop : MonoBehaviour
     }
 
     public float TimePerDrop() {
-        double d = 60 * upgradeHandler.GetTotalEffect(29);
+        double d = 60/* * upgradeHandler.GetTotalEffect(29)*/;
         return Convert.ToSingle(d);
     }
 
@@ -96,8 +96,8 @@ public class CoinDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (upgradeHandler.IsUpgradePurchased(25))
-            UpdateDropCooldown();
+        /*if (upgradeHandler.IsUpgradePurchased(25))
+            UpdateDropCooldown();*/
         if (!isConvertEnabled)
             convertText.text = "Sacrifice disabled";
         else
@@ -173,7 +173,7 @@ public class CoinDrop : MonoBehaviour
     void GiveResources() {
         player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * ResourceMultiplier();
         if (upgradeHandler.IsUpgradePurchased(0))
-            player.clickpoints += player.ClickpointsPerClick * ResourceMultiplier();
+            player.Clickpoints += player.ClickpointsPerClick * ResourceMultiplier();
         if (upgradeHandler.IsUpgradePurchased(3))
             player.Experience += player.ExperiencePerClick * ResourceMultiplier();
         if (upgradeHandler.IsUpgradePurchased(36))
@@ -184,7 +184,7 @@ public class CoinDrop : MonoBehaviour
         player.Coins = 0;
         if (upgradeHandler.IsUpgradePurchased(54))
         {
-            player.clickpoints = 0;
+            player.Clickpoints = 0;
         }
     }
 

@@ -1,8 +1,5 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class SaveLoad : MonoBehaviour
 {
@@ -18,6 +15,7 @@ public class SaveLoad : MonoBehaviour
     public ProgressBarHandler progressBar;
     public Options options;
     private UpgradeHandler upgradeHandler;
+    private TierHandler tierHandler;
 
     private void Awake()
     {
@@ -27,6 +25,7 @@ public class SaveLoad : MonoBehaviour
     void Start() {
         player = Player.instance;
         upgradeHandler = UpgradeHandler.instance;
+        tierHandler = TierHandler.instance;
         LoadGameData();
     }
 
@@ -54,18 +53,19 @@ public class SaveLoad : MonoBehaviour
 
     public void SaveGameData() {
         //Upgrades
-        foreach (Upgrade upgrade in upgradeHandler.upgrades) {
-            int id = upgrade.id;
-            Save("Upgrade" + id + "Purchased", upgrade.isPurchased.ToString());
+        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
+        {
+            int id = upgrade.Key;
+            Save("Upgrade" + id + "Purchased", upgrade.Value.isPurchased.ToString());
         }
 
         //Main Stats (Related to gameplay)
         Save("Coins", player.Coins.ToString("R"));
-        Save("Level", player.level.ToString());
+        Save("Level", player.Level.ToString());
         Save("Experience", player.Experience.ToString("R"));
         Save("ExperienceReq", player.experienceNeededToLevelUp.ToString("R"));
         Save("MultiLevel", multiplier.level.ToString());
-        Save("Clickpoints", player.clickpoints.ToString("R"));
+        Save("Clickpoints", player.Clickpoints.ToString("R"));
         Save("AutoclickerLevel", autoclicker.level.ToString());
         Save("AutoclickerBonus", autoclicker.bonus.ToString("R"));
         Save("AutoclickerSurge", autoclicker.surgeTimeRemaining.ToString("R"));
@@ -76,6 +76,7 @@ public class SaveLoad : MonoBehaviour
         Save("PlatinumMulti", platinum.diamondMultiLevels.ToString());
         Save("PlatinumDrop", platinum.dropPurchases.ToString());
         Save("DropCount", coinDrop.dropCount.ToString());
+        Save("Tier", tierHandler.tier.ToString());
 
         //Progress Bar Stats
         for (int i = 0; i < 6; i++)
@@ -104,23 +105,13 @@ public class SaveLoad : MonoBehaviour
     }
 
     public void LoadGameData() {
-        //Upgrades
-        foreach (Upgrade upgrade in upgradeHandler.upgrades)
-        {
-            int id = upgrade.id;
-            bool purchased = bool.Parse(Load("Upgrade" + id + "Purchased", "FALSE"));
-            if (purchased) {
-                upgrade.PurchaseUpgrade();
-            }
-        }
-
         //Main Stats (Related to gameplay)
         player.Coins = double.Parse(Load("Coins", "0"));
-        player.clickpoints = double.Parse(Load("Clickpoints", "0"));
+        player.Clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
-        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));
+        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "16"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
-        player.level = int.Parse(Load("Level", "0"));
+        player.Level = int.Parse(Load("Level", "0"));
         autoclicker.level = int.Parse(Load("AutoclickerLevel", "0"));
         autoclicker.bonus = double.Parse(Load("AutoclickerBonus", "0"));
         autoclicker.surgeTimeRemaining = float.Parse(Load("AutoclickerSurge", "0"));
@@ -131,6 +122,22 @@ public class SaveLoad : MonoBehaviour
         platinum.diamondMultiLevels = int.Parse(Load("PlatinumMulti", "0"));
         platinum.dropPurchases = int.Parse(Load("PlatinumDrop", "0"));
         coinDrop.dropCount = int.Parse(Load("DropCount", "0"));
+
+        //Tier
+        int targetTier = int.Parse(Load("Tier", "0"));
+        while (tierHandler.tier < targetTier) {
+            tierHandler.BuyTier();
+        }
+
+        //Upgrades
+        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
+        {
+            bool purchased = bool.Parse(Load("Upgrade" + upgrade.Key + "Purchased", "FALSE"));
+            if (purchased)
+            {
+                upgrade.Value.PurchaseUpgrade();
+            }
+        }
 
         //Progress Bar Stats
         for (int i = 0; i < 6; i++)

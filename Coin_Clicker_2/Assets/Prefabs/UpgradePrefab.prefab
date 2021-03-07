@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1188531306830673852}
   - component: {fileID: 1438324937215966301}
   m_Layer: 5
-  m_Name: Upgrade
+  m_Name: UpgradePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,6 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e4e8a62f18eb6147bfc89811aac227b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  purchaseHandler: {fileID: 0}
   id: 0
+  tierRequired: 0
   isPurchased: 0
   isAdditive: 0

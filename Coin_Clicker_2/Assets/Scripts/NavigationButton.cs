@@ -49,7 +49,6 @@ public class NavigationButton : TooltipContentHandler
             case 3:
                 stringToDisplay = "Autoclicker\n\n<color=lime>{0}</color> Total Levels";
                 objects.Add(autoclicker.Level);
-                print(autoclicker.level);
                 break;
             case 4:
                 stringToDisplay = "Diamond Upgrades";
@@ -61,7 +60,7 @@ public class NavigationButton : TooltipContentHandler
                 stringToDisplay = "Options";
                 break;
             default:
-                stringToDisplay = "<color=red>A tooltip should be here but it is missing. Please report this bug.</color>";
+                stringToDisplay = "<color=red>A tooltip should be here but it is missing.\nPlease report this bug.</color>";
                 break;
         }
     }

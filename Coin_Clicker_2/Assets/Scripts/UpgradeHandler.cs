@@ -8,13 +8,15 @@ public class UpgradeHandler : MonoBehaviour
     public static UpgradeHandler instance;
     private TierHandler tierHandler;
     private NumberFormatter formatter;
-    public List<Upgrade> upgrades;
-    public List<Upgrade> purchasedUpgrades;
+    public Dictionary<int, Upgrade> upgrades = new Dictionary<int, Upgrade>();
+    public List<Upgrade> purchasedUpgrades = new List<Upgrade>();
+    public GameObject upgradePrefab;
+    public GameObject[] upgradeRows;
 
     public Text upgradeCostDisplay;
 
     public double GetCost() {
-        return Math.Pow(16, purchasedUpgrades.Count + tierHandler.tier);
+        return Math.Pow(2, purchasedUpgrades.Count + tierHandler.tier + 1);
     }
 
     private void Awake()
@@ -27,8 +29,7 @@ public class UpgradeHandler : MonoBehaviour
     {
         tierHandler = TierHandler.instance;
         formatter = NumberFormatter.instance;
-        FillListOfUpgrades();
-        SetAdditive(5, 12, 23, 24, 27, 28, 31, 34, 40, 41);
+        CreateUpgrades();
     }
 
     // Update is called once per frame
@@ -43,24 +44,58 @@ public class UpgradeHandler : MonoBehaviour
             upgrades[id].isAdditive = true;
     }
 
-    void FillListOfUpgrades()
-    {
-        Upgrade[] foundUpgrades = FindObjectsOfType<Upgrade>();
-        upgrades = new List<Upgrade>(foundUpgrades);
-        foreach (Upgrade foundUpgrade in foundUpgrades)
-            upgrades[foundUpgrade.id] = foundUpgrade;
+    void CreateUpgrades() {
+        int gridSize = upgradeRows.Length;
+        for (int row = 0; row < gridSize; row++)
+            for (int col = 0; col < gridSize; col++)
+                CreateUpgrade(row, col);
+    }
+
+    void CreateUpgrade(int row, int col) {
+        GameObject upgradeObject = Instantiate(upgradePrefab, upgradeRows[row].transform);
+        Upgrade upgrade = upgradeObject.GetComponent<Upgrade>();
+        if (row == col)
+            DisableUpgrade(upgrade);
+        else
+            InitializeUpgrade(upgrade, row, col);
+    }
+
+    void InitializeUpgrade(Upgrade upgrade, int row, int col) {
+        upgrade.id = (row + 1) * 100 + (col + 1);
+        upgrade.tierRequired = Math.Max(row, col) + 1;
+        upgrade.SetReferences();
+        upgrades.Add(upgrade.id, upgrade);
+        upgrade.gameObject.SetActive(false);
+    }
+
+    void DisableUpgrade(Upgrade upgrade) {
+        Image image = upgrade.GetComponent<Image>();
+        image.color = new Color(.2f, .2f, .2f);
+        upgrade.enabled = false;
     }
 
     public List<Upgrade> GetListOfUpgradesFromID(params int[] ids)
     {
         List<Upgrade> selectedUpgrades = new List<Upgrade>();
         foreach (int id in ids)
-            selectedUpgrades.Add(upgrades[id]);
+        {
+            try { selectedUpgrades.Add(upgrades[id]); }
+            catch (KeyNotFoundException) { }
+        }
         return selectedUpgrades;
     }
 
     public double GetEffect(int id) {
-        return upgrades[id].GetEffect();
+        try {
+            if (!upgrades[id].isPurchased)
+            {
+                if (upgrades[id].isAdditive)
+                    return 0;
+                return 1;
+            }
+            return upgrades[id].GetEffect();
+        }
+        catch (KeyNotFoundException) { return 1; }
     }
 
     public double GetTotalEffect(bool isAdditive, List<Upgrade> upgrades)
@@ -69,9 +104,9 @@ public class UpgradeHandler : MonoBehaviour
         foreach (Upgrade upgrade in upgrades)
         {
             if (isAdditive)
-                totalEffect += upgrade.GetEffect();
+                totalEffect += GetEffect(upgrade.id);
             else
-                totalEffect *= upgrade.GetEffect();
+                totalEffect *= GetEffect(upgrade.id);
         }
         return totalEffect;
     }
@@ -92,6 +127,15 @@ public class UpgradeHandler : MonoBehaviour
 
     public bool IsUpgradePurchased(int id)
     {
-        return upgrades[id].isPurchased;
+        try {return upgrades[id].isPurchased; }
+        catch (KeyNotFoundException) { return false; }
+    }
+
+    public void UnlockUpgrades(int tier) {
+        foreach (KeyValuePair<int, Upgrade> upgradePair in upgrades) {
+            Upgrade upgrade = upgradePair.Value;
+            if (upgrade.tierRequired == tier + 1)
+                upgrade.gameObject.SetActive(true);
+        }
     }
 }

@@ -14,6 +14,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Autoclicker autoclicker;
     private Options options;
     private UpgradeHandler upgradeHandler;
+    private TierHandler tierHandler;
 
     public AudioSource coinSource;
 
@@ -33,6 +34,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         autoclicker = Autoclicker.instance;
         options = Options.instance;
         upgradeHandler = UpgradeHandler.instance;
+        tierHandler = TierHandler.instance;
     }
 
     // Update is called once per frame
@@ -68,9 +70,9 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (options.sfx) PlayClickSoundEffect();
 
         player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * overflowBonus;
-        if(upgradeHandler.IsUpgradePurchased(0))
-            player.clickpoints += player.ClickpointsPerClick * overflowBonus;
-        if (upgradeHandler.IsUpgradePurchased(3))
+        if (tierHandler.tier >= 1)
+            player.Clickpoints += player.ClickpointsPerClick * overflowBonus;
+        if (tierHandler.tier >= 2)
             player.Experience += player.ExperiencePerClick * overflowBonus;
 
         player.UpdateDisplays();

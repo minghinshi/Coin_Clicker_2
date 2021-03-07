@@ -14,8 +14,8 @@ public class Player : MonoBehaviour {
     public double CoinsPerClick
     {
         get {
-            double d = 1;
-            d *= upgradeHandler.GetTotalEffect(1, 4, 18, 32, 51);
+            double d = 0.1;
+            d *= upgradeHandler.GetTotalEffect(102, 103, 18, 32, 51);
             d *= progressBar.GetTotalMultiplier();
             d *= multi.CoinMulti;
             return d;
@@ -31,24 +31,25 @@ public class Player : MonoBehaviour {
             return d;
         }
     }
-    public double clickpoints;
+    private double clickpoints;
     public double ClickpointsPerClick {
         get
         {
-            double d = 1;
-            d *= upgradeHandler.GetTotalEffect(2, 6, 9, 19, 33, 42);
+            double d = 0.1;
+            d *= upgradeHandler.GetTotalEffect(201, 203, 9, 19, 33, 42);
             return d;
         }
     }
 
     public double experience;
     public double Experience {
-        get { return experience; }
+        get => experience;
         set
         {
             experience = value;
             if (experience >= experienceNeededToLevelUp)
                 LevelUp();
+            UpdateExperienceDisplays();
         }
     }
     public double ExperiencePerClick
@@ -56,20 +57,38 @@ public class Player : MonoBehaviour {
         get
         {
             double d = CoinsPerClick;
-            d *= upgradeHandler.GetTotalEffect(5, 7, 11, 20);
+            d *= upgradeHandler.GetTotalEffect(301, 302, 11, 20);
             return d;
         }
     }
 
-    public double Coins { get => coins;
+    public double Coins {
+        get => coins;
         set {
             coins = value;
             coinsDisplay.text = NumberFormatter.instance.FormatNumber(value);
         }
     }
 
+    public double Clickpoints {
+        get => clickpoints;
+        set {
+            clickpoints = value;
+            clickpointsDisplay.text = NumberFormatter.instance.FormatNumber(Clickpoints);
+        }
+    }
+
+    public int Level {
+        get => level;
+        set
+        {
+            level = value;
+            levelDisplay.text = level.ToString();
+        }
+    }
+
     public double experienceNeededToLevelUp;
-    public int level;
+    private int level;
 
     public double diamondCoins;
 
@@ -118,8 +137,6 @@ public class Player : MonoBehaviour {
     }
 	
     public void UpdateDisplays() {
-        if(IsUpgradePurchased(0))
-            clickpointsDisplay.text = NumberFormatter.instance.FormatNumber(clickpoints);
         if (IsUpgradePurchased(3))
             UpdateExperienceDisplays();
         if (IsUpgradePurchased(36))
@@ -129,7 +146,6 @@ public class Player : MonoBehaviour {
     void UpdateExperienceDisplays() {
         experienceBar.value = Convert.ToSingle(experience / experienceNeededToLevelUp);
         experienceDisplay.text = NumberFormatter.instance.FormatNumber(experience) + " / " + NumberFormatter.instance.FormatNumber(experienceNeededToLevelUp);
-        levelDisplay.text = level.ToString();
     }
 
     public void UnlockLevels()
@@ -142,14 +158,6 @@ public class Player : MonoBehaviour {
     {
         MultiplierPanel.SetActive(true);
         UnlockNavigationTab(0);
-    }
-
-    public void UnlockAutoclicker() {
-        AutoclickerPanel.SetActive(true);
-        UnlockNavigationTab(1);
-    }
-
-    public void UnlockAutoclickerUpgrades() {
     }
 
     public void UnlockCoinDrop() {
@@ -176,11 +184,10 @@ public class Player : MonoBehaviour {
 
     void LevelUp() {
         experience -= experienceNeededToLevelUp;
-        Coins += experienceNeededToLevelUp * 0.15;
+        Coins += experienceNeededToLevelUp * 0.5;
         if (!(IsUpgradePurchased(43) && UnityEngine.Random.Range(0f, 1f) < (Math.Log10(diamondCoins + 1) * 0.1)))
-            experienceNeededToLevelUp *= 1.15;
-        level++;
-        UpdateDisplays();
+            experienceNeededToLevelUp *= 2;
+        Level++;
     }
 
     void UnlockNavigationTab(int number) {

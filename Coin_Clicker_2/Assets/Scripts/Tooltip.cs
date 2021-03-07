@@ -53,11 +53,11 @@ public class Tooltip : MonoBehaviour
 
         if (upgradeHandler.IsUpgradePurchased(1))
         {
-            objects.Add(1 + Math.Log10(player.clickpoints + 1) * 0.1);
+            objects.Add(1 + Math.Log10(player.Clickpoints + 1) * 0.1);
         }
         if (upgradeHandler.IsUpgradePurchased(4))
         {
-            objects.Add(1 + player.level * 0.03);
+            objects.Add(1 + player.Level * 0.03);
         }
         if (upgradeHandler.IsUpgradePurchased(18))
         {

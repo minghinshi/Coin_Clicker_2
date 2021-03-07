@@ -40,7 +40,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = Math.Pow(2, level) * 8;
+            double d = Math.Pow(2, level + 1);
             return d;
         }
     }
@@ -120,8 +120,8 @@ public class Autoclicker : MonoBehaviour
     }
 
     public void Upgrade() {
-        if (player.clickpoints >= cost) {
-            player.clickpoints -= cost;
+        if (player.Clickpoints >= cost) {
+            player.Clickpoints -= cost;
             level++;
 
             player.UpdateDisplays();

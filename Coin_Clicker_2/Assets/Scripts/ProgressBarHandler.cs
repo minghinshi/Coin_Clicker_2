@@ -113,9 +113,9 @@ public class ProgressBarHandler : MonoBehaviour
 
     public void BuySpeedMulti2()
     {
-        if (player.level >= 1000)
+        if (player.Level >= 1000)
         {
-            player.level -= 100;
+            player.Level -= 100;
             speedMultiLevel2++;
         }
     }
