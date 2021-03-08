@@ -1,8 +1,5 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class SaveLoad : MonoBehaviour
 {
@@ -15,8 +12,10 @@ public class SaveLoad : MonoBehaviour
     public Autoclicker autoclicker;
     public CoinDrop coinDrop;
     public DiamondUpgrades platinum;
-    public ProgressBar progressBar;
+    public ProgressBarHandler progressBar;
     public Options options;
+    private UpgradeHandler upgradeHandler;
+    private TierHandler tierHandler;
 
     private void Awake()
     {
@@ -25,6 +24,9 @@ public class SaveLoad : MonoBehaviour
 
     void Start() {
         player = Player.instance;
+        upgradeHandler = UpgradeHandler.instance;
+        tierHandler = TierHandler.instance;
+        LoadGameData();
     }
 
     private void Update()
@@ -50,17 +52,20 @@ public class SaveLoad : MonoBehaviour
     }
 
     public void SaveGameData() {
-        for (int i = 0; i < player.purchasedUpgrade.Length; i++)
+        //Upgrades
+        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
         {
-            Save("Upgrade" + i + "Purchased", player.purchasedUpgrade[i].ToString());
+            int id = upgrade.Key;
+            Save("Upgrade" + id + "Purchased", upgrade.Value.isPurchased.ToString());
         }
 
-        Save("Coins", player.coins.ToString("R"));
-        Save("Level", player.level.ToString());
+        //Main Stats (Related to gameplay)
+        Save("Coins", player.Coins.ToString("R"));
+        Save("Level", player.Level.ToString());
         Save("Experience", player.Experience.ToString("R"));
         Save("ExperienceReq", player.experienceNeededToLevelUp.ToString("R"));
         Save("MultiLevel", multiplier.level.ToString());
-        Save("Clickpoints", player.clickpoints.ToString("R"));
+        Save("Clickpoints", player.Clickpoints.ToString("R"));
         Save("AutoclickerLevel", autoclicker.level.ToString());
         Save("AutoclickerBonus", autoclicker.bonus.ToString("R"));
         Save("AutoclickerSurge", autoclicker.surgeTimeRemaining.ToString("R"));
@@ -71,7 +76,9 @@ public class SaveLoad : MonoBehaviour
         Save("PlatinumMulti", platinum.diamondMultiLevels.ToString());
         Save("PlatinumDrop", platinum.dropPurchases.ToString());
         Save("DropCount", coinDrop.dropCount.ToString());
+        Save("Tier", tierHandler.tier.ToString());
 
+        //Progress Bar Stats
         for (int i = 0; i < 6; i++)
         {
             Save("ProgressBar" + i + "Multi", progressBar.barMulti[i].ToString("R"));
@@ -81,6 +88,7 @@ public class SaveLoad : MonoBehaviour
         Save("SpeedMultiLevel", progressBar.speedMultiLevel.ToString());
         Save("SpeedMultiLevel2", progressBar.speedMultiLevel2.ToString());
 
+        //Options
         Save("Music", options.music.ToString());
         Save("SFX", options.sfx.ToString());
         Save("ClickParticles", options.clickParticles.ToString());
@@ -90,28 +98,20 @@ public class SaveLoad : MonoBehaviour
         Save("UseLogarithm", options.useLogarithm.ToString());
         Save("FormatSmallNumbers", options.formatSmallNumbers.ToString());
 
+        //Optional Stats (Does not affect gameplay)
+        //Insert Stats Here...
+
         timeUntilSave = 60f;
     }
 
     public void LoadGameData() {
-        for (int i = 0; i < player.purchasedUpgrade.Length; i++)
-        {
-            bool purchased = bool.Parse(Load("Upgrade" + i + "Purchased", "FALSE"));
-            if (purchased) {
-                foreach (Upgrades upgrade in FindObjectsOfType<Upgrades>()) {
-                    if (upgrade.id == i)
-                    {
-                        upgrade.Upgrade();
-                    }
-                }
-            }
-        }
-        player.coins = double.Parse(Load("Coins", "0"));
-        player.clickpoints = double.Parse(Load("Clickpoints", "0"));
+        //Main Stats (Related to gameplay)
+        player.Coins = double.Parse(Load("Coins", "0"));
+        player.Clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
-        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));
+        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "16"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
-        player.level = int.Parse(Load("Level", "0"));
+        player.Level = int.Parse(Load("Level", "0"));
         autoclicker.level = int.Parse(Load("AutoclickerLevel", "0"));
         autoclicker.bonus = double.Parse(Load("AutoclickerBonus", "0"));
         autoclicker.surgeTimeRemaining = float.Parse(Load("AutoclickerSurge", "0"));
@@ -123,15 +123,32 @@ public class SaveLoad : MonoBehaviour
         platinum.dropPurchases = int.Parse(Load("PlatinumDrop", "0"));
         coinDrop.dropCount = int.Parse(Load("DropCount", "0"));
 
+        //Tier
+        int targetTier = int.Parse(Load("Tier", "0"));
+        while (tierHandler.tier < targetTier) {
+            tierHandler.BuyTier();
+        }
+
+        //Upgrades
+        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
+        {
+            bool purchased = bool.Parse(Load("Upgrade" + upgrade.Key + "Purchased", "FALSE"));
+            if (purchased)
+            {
+                upgrade.Value.PurchaseUpgrade();
+            }
+        }
+
+        //Progress Bar Stats
         for (int i = 0; i < 6; i++)
         {
             progressBar.barMulti[i] = double.Parse(Load("ProgressBar" + i + "Multi", "1"));
             progressBar.timeLeft[i] = float.Parse(Load("ProgressBar" + i + "Time", Mathf.Pow(100,i).ToString("R")));
         }
-
         progressBar.speedMultiLevel = int.Parse(Load("SpeedMultiLevel", "1"));
         progressBar.speedMultiLevel2 = int.Parse(Load("SpeedMultiLevel2", "1"));
 
+        //Options
         options.music = bool.Parse(Load("Music", "FALSE"));
         options.sfx = bool.Parse(Load("SFX", "FALSE"));
         options.clickParticles = bool.Parse(Load("ClickParticles", "TRUE"));
@@ -141,6 +158,9 @@ public class SaveLoad : MonoBehaviour
         options.useLogarithm = bool.Parse(Load("UseLogarithm", "FALSE"));
         options.formatSmallNumbers = bool.Parse(Load("FormatSmallNumbers", "FALSE"));
         options.UpdateOptions();
+
+        //Optional Stats (Does not affect gameplay)
+        //Insert Stats Here...
     }
 }
 
