@@ -12,6 +12,7 @@ public class Autoclicker : MonoBehaviour
     private DiamondUpgrades platinum;
     private CoinDrop drop;
     private UpgradeHandler upgradeHandler;
+    private TierHandler tierHandler;
 
     public float timeUntilClick;
     public double surgeTimeRemaining;
@@ -47,7 +48,7 @@ public class Autoclicker : MonoBehaviour
     public double bonus;
     public double BonusIncrease()
     {
-        double d = 2.5e-6;
+        double d = Math.Pow(2, -bonus);
         d += upgradeHandler.GetTotalEffect(true, 23);
         return d;
     }
@@ -64,9 +65,8 @@ public class Autoclicker : MonoBehaviour
 
     public Slider progressBar;
 
-    public Text cpsDisplay;
+    public Text statDisplay;
     public Text costDisplay;
-    public Text bonusDisplay;
     public Text surgeDisplay;
 
     private void Awake()
@@ -83,6 +83,7 @@ public class Autoclicker : MonoBehaviour
         platinum = DiamondUpgrades.instance;
         drop = CoinDrop.instance;
         upgradeHandler = UpgradeHandler.instance;
+        tierHandler = TierHandler.instance;
     }
 
     // Update is called once per frame
@@ -102,7 +103,7 @@ public class Autoclicker : MonoBehaviour
         timeUntilClick++;
         clicker.Click(clickOverflowBonus);
  
-        if (upgradeHandler.IsUpgradePurchased(18))
+        if (tierHandler.tier >= 4)
             bonus += BonusIncrease() * clickOverflowBonus;
     }
 
@@ -130,15 +131,10 @@ public class Autoclicker : MonoBehaviour
     }
 
     public void UpdateDisplays() {
-        cpsDisplay.text = clicksPerSec.ToString("N1") + " clicks/sec";
+        statDisplay.text = clicksPerSec.ToString("N1") + " clicks/sec";
         costDisplay.text = NumberFormatter.instance.FormatNumber(cost);
 
-        if (upgradeHandler.IsUpgradePurchased(18))
-        {
-            if(bonus < 100)
-                bonusDisplay.text = "+" + (bonus * 100).ToString("N2") + "%";
-            else
-                bonusDisplay.text = (bonus+1).ToString("N2") + "x";
-        }
+        if (tierHandler.tier >= 4)
+            statDisplay.text += "\n" + NumberFormatter.instance.FormatNumber(bonus) + " Power";
     }
 }

@@ -41,17 +41,6 @@ public class Upgrade : TooltipContentHandler
 
     public void PurchaseUpgrade() {
         switch (id) {
-            case 8:
-                player.UnlockMultiplier();
-                break;
-            case 9:
-            case 10:
-            case 11:
-                multi.UpdateDisplays();
-                break;
-            case 18:
-                autoclicker.bonusDisplay.gameObject.SetActive(true);
-                break;
             case 25:
                 player.UnlockCoinDrop();
                 break;
@@ -92,11 +81,13 @@ public class Upgrade : TooltipContentHandler
         switch (id) {
             //Coin Upgrades
             case 102:
-                return Math.Log10(player.Clickpoints + 1) + 1;
+                return Math.Log10(player.Clickpoints + 1) / 2 + 1;
             case 103:
-                return Math.Sqrt(player.Level + 1);
-            case 18:
-                return 1 + autoclicker.bonus;
+                return player.Level * 0.1 + 1;
+            case 104:
+                return multi.GetMultiplier();
+            case 105:
+                return autoclicker.bonus * 0.01 + 1;
             case 32:
                 return 1 + (autoclicker.surgeTimeRemaining * 0.05);
             case 41:
@@ -106,13 +97,13 @@ public class Upgrade : TooltipContentHandler
 
             //Clickpoint Upgrades
             case 201:
-                return Math.Log10(player.Coins + 1) + 1;
+                return Math.Log10(player.Coins + 1) / 2 + 1;
             case 203:
-                return Math.Sqrt(player.Level + 1);
-            case 9:
-                return ((multi.GetMultiplier() - 1) * 0.2 + 1);
-            case 19:
-                return 1 + autoclicker.bonus;
+                return player.Level * 0.1 + 1;
+            case 204:
+                return multi.GetMultiplier();
+            case 205:
+                return autoclicker.bonus * 0.01 + 1;
             case 33:
                 return 1 + (autoclicker.surgeTimeRemaining * 0.05);
             case 42:
@@ -120,34 +111,30 @@ public class Upgrade : TooltipContentHandler
 
             //Experience Upgrades
             case 301:
-                return Math.Log10(player.Coins + 1)/2 + 1;
+                return Math.Log10(player.Coins + 1) / 4 + 1;
             case 302:
-                return Math.Log10(player.Clickpoints + 1)/2 + 1;
-            case 11:
-                return ((multi.GetMultiplier() - 1) * 0.2 + 1);
-            case 20:
-                return 1 + autoclicker.bonus;
+                return Math.Log10(player.Clickpoints + 1) / 4 + 1;
+            case 304:
+                return multi.GetMultiplier();
+            case 305:
+                return autoclicker.bonus * 0.01 + 1;
 
             //Multiplier Upgrades
-            case 10:
-                return (multi.GetMultiplier() - 1) * 0.2 + 1;
-            case 12:
-                return -0.35;
-            case 13:
-                return 1 + player.Level * 0.0025;
-            case 14:
-                return 1 / Math.Pow(player.Clickpoints, 0.15);
-            case 21:
-                return 1 + autoclicker.bonus;
+            case 402:
+                return 1 + player.Clickpoints / 1000;
+            case 403:
+                return player.Level * 0.02 + 1;
+            case 405:
+                return autoclicker.bonus + 1;
 
             //Autoclicker Upgrades
-            case 17:
-                return (clicker.coinIsHeld ? 1.15 : 1);
-            case 22:
-                return 1 + player.Level * 0.0015;
-            case 23:
+            case 501:
                 return Math.Log10(player.Coins + 1) * 6.25e-8;
-            case 24:
+            case 502:
+                return (clicker.coinIsHeld ? 1.5 : 1);
+            case 503:
+                return 1 + player.Level * 0.0015;
+            case 504:
                 return multi.Level * 0.1;
 
             //Dropping Coin Upgrades
@@ -196,39 +183,98 @@ public class Upgrade : TooltipContentHandler
             case 102:
                 stringToDisplay = "Clickpoints boost coins.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
                 break;
 
             case 103:
                 stringToDisplay = "Levels boost coins.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
+                break;
+
+            case 104:
+                stringToDisplay = "Boosters gives an additional boost to coins.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            case 105:
+                stringToDisplay = "Autoclicker power boost coins.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
                 break;
 
             //Clickpoint Upgrades
             case 201:
                 stringToDisplay = "Coins boost clickpoints.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
                 break;
 
             case 203:
                 stringToDisplay = "Levels boost clickpoints.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
+                break;
+
+            case 204:
+                stringToDisplay = "Boosters gives an additional boost to clickpoints.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            case 205:
+                stringToDisplay = "Autoclicker power boost clickpoints.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
                 break;
 
             //Experience Upgrades
             case 301:
                 stringToDisplay = "Coins boost experience.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
                 break;
 
             case 302:
                 stringToDisplay = "Clickpoints boost experience.\n" +
                         "<color=#90ee90>Currently: {0}x</color>";
-                objects.Add(GetFormattedEffect());
+                DisplayEffect();
+                break;
+
+            case 304:
+                stringToDisplay = "Boosters gives an additional boost to experience.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            case 305:
+                stringToDisplay = "Autoclicker power boost experience.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            //Booster Upgrades
+            case 401:
+                stringToDisplay = "Reduce booster cost scaling by <color=#90ee90>0.5</color>.";
+                break;
+
+            case 402:
+                stringToDisplay = "Clickpoints reduces booster cost.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            case 403:
+                stringToDisplay = "Levels increase the effectiveness of boosters.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
+                break;
+
+            case 405:
+                stringToDisplay = "Autoclicker power further reduces booster cost.\n" +
+                        "<color=#90ee90>Currently: {0}x</color>";
+                DisplayEffect();
                 break;
 
             default:
@@ -236,5 +282,9 @@ public class Upgrade : TooltipContentHandler
             break;
         }
         stringToDisplay += "\nUpgrade ID: " + id;
+    }
+
+    void DisplayEffect() {
+        objects.Add(GetFormattedEffect());
     }
 }

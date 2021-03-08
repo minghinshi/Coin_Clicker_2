@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
     private ProgressBarHandler progressBar;
     private UpgradeHandler upgradeHandler;
 
+    [SerializeField]
     private double coins;
     public double CoinsPerClick
     {
@@ -36,7 +37,7 @@ public class Player : MonoBehaviour {
         get
         {
             double d = 0.1;
-            d *= upgradeHandler.GetTotalEffect(201, 203, 9, 19, 33, 42);
+            d *= upgradeHandler.GetTotalEffect(201, 203, 204, 19, 33, 42);
             return d;
         }
     }
@@ -57,7 +58,7 @@ public class Player : MonoBehaviour {
         get
         {
             double d = CoinsPerClick;
-            d *= upgradeHandler.GetTotalEffect(301, 302, 11, 20);
+            d *= upgradeHandler.GetTotalEffect(301, 302, 304, 20);
             return d;
         }
     }
@@ -119,8 +120,6 @@ public class Player : MonoBehaviour {
     public GameObject DiamondSpeedPurchase;
     public GameObject LevelSpeedPurchase;
 
-    public GameObject[] NavigationTabs;
-
     public Transform ParticleHolder;
 
     private void Awake()
@@ -148,18 +147,6 @@ public class Player : MonoBehaviour {
         experienceDisplay.text = NumberFormatter.instance.FormatNumber(experience) + " / " + NumberFormatter.instance.FormatNumber(experienceNeededToLevelUp);
     }
 
-    public void UnlockLevels()
-    {
-        levelDisplay.transform.parent.gameObject.SetActive(true);
-        experienceBar.gameObject.SetActive(true);
-    }
-
-    public void UnlockMultiplier()
-    {
-        MultiplierPanel.SetActive(true);
-        UnlockNavigationTab(0);
-    }
-
     public void UnlockCoinDrop() {
         coinDropBar.gameObject.SetActive(true);
         foreach (GameObject option in ExtraOptions)
@@ -173,25 +160,21 @@ public class Player : MonoBehaviour {
         DiamondIcon.SetActive(true);
         diamondDisplay.gameObject.SetActive(true);
         DiamondPanel.SetActive(true);
-        UnlockNavigationTab(2);
+        //UnlockNavigationTab(2);
     }
 
     public void UnlockProgressBars() {
         PanelSwitcher.SetActive(true);
         ProgressBarPanel.SetActive(true);
-        UnlockNavigationTab(3);
+        //UnlockNavigationTab(3);
     }
 
     void LevelUp() {
         experience -= experienceNeededToLevelUp;
-        Coins += experienceNeededToLevelUp * 0.5;
+        Coins += experienceNeededToLevelUp;
         if (!(IsUpgradePurchased(43) && UnityEngine.Random.Range(0f, 1f) < (Math.Log10(diamondCoins + 1) * 0.1)))
             experienceNeededToLevelUp *= 2;
         Level++;
-    }
-
-    void UnlockNavigationTab(int number) {
-        NavigationTabs[number].SetActive(true);
     }
 
     bool IsUpgradePurchased(int id) {

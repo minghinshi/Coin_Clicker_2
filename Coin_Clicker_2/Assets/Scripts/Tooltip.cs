@@ -15,6 +15,8 @@ public class Tooltip : MonoBehaviour
     UpgradeHandler upgradeHandler;
     public static Tooltip instance;
 
+    bool isDisplayingTooltip;
+
     private void Awake()
     {
         instance = this;
@@ -41,7 +43,11 @@ public class Tooltip : MonoBehaviour
     public void SetText(string Text) {
         tooltipText.text = Text;
         transform.localScale = new Vector3(1f, 1f);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        if (!isDisplayingTooltip)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+            isDisplayingTooltip = true;
+        }
     }
 
     public void SetText(string Text, params object[] args) {
@@ -78,5 +84,6 @@ public class Tooltip : MonoBehaviour
     public void ClearText() {
         tooltipText.text = "";
         transform.localScale = new Vector3(0f, 0f);
+        isDisplayingTooltip = false;
     }
 }

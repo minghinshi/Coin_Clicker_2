@@ -11,18 +11,19 @@ public class Multiplier : MonoBehaviour {
     public Autoclicker auto;
     public DiamondUpgrades diamond;
     private UpgradeHandler upgradeHandler;
+    private NumberFormatter formatter;
 
     public double Cost {
         get {
-            double baseCost = 2 + upgradeHandler.GetEffect(12);
-            return 1000 * Math.Pow(baseCost, level) * upgradeHandler.GetEffect(14);
+            double baseCost = 2 - (upgradeHandler.IsUpgradePurchased(401) ? 0.5 : 0);
+            return 512 * Math.Pow(baseCost, level) / upgradeHandler.GetTotalEffect(402, 405);
         }
     }
 
     public double GetMultiplier()
     {
-        double d = 1 + ((Level + freeLevels) * 0.15);
-        d *= upgradeHandler.GetTotalEffect(13, 21);
+        double d = 1 + ((Level + freeLevels) * 0.1);
+        d *= upgradeHandler.GetTotalEffect(403, 21);
         return d;
     }
 
@@ -36,7 +37,7 @@ public class Multiplier : MonoBehaviour {
     public double CoinMulti {
         get
         {
-            return GetMultiplier() * upgradeHandler.GetEffect(10);
+            return GetMultiplier() * upgradeHandler.GetEffect(104);
         }
     }
 
@@ -61,8 +62,8 @@ public class Multiplier : MonoBehaviour {
     // Use this for initialization
     void Start () {
         upgradeHandler = UpgradeHandler.instance;
-
-        costDisplay.text = NumberFormatter.instance.FormatNumber(Cost);
+        formatter = NumberFormatter.instance;
+        costDisplay.text = formatter.FormatNumber(Cost);
         multiplierDisplay.text = GetMultiplier().ToString("N1") + "x coins from clicks";
     }
 
@@ -77,7 +78,7 @@ public class Multiplier : MonoBehaviour {
     }
 
     public void UpdateDisplays() {
-        costDisplay.text = NumberFormatter.instance.FormatNumber(Cost);
+        costDisplay.text = formatter.FormatNumber(Cost);
         levelDisplay.text = "Level " + (Level+freeLevels).ToString("N0");
         levelSourceDisplay.text = level.ToString("N0") + " levels from upgrading";
         if (freeLevels > 0)
@@ -86,10 +87,10 @@ public class Multiplier : MonoBehaviour {
             levelSourceDisplay.text += "\n" + diamond.diamondMultiLevels.ToString("N0") + " levels from diamond upgrade";
 
         multiplierDisplay.text = CoinMulti.ToString("N2") + "x coins";
-        if (upgradeHandler.IsUpgradePurchased(9))
-            multiplierDisplay.text += "\n" + ((GetMultiplier() - 1) * 0.2 + 1).ToString("N2") + "x clickpoints";
-        if (upgradeHandler.IsUpgradePurchased(11))
-            multiplierDisplay.text += "\n" + ((GetMultiplier() - 1) * 0.2 + 1).ToString("N2") + "x experience";
+        if (upgradeHandler.IsUpgradePurchased(204))
+            multiplierDisplay.text += "\n" + formatter.FormatNumber(upgradeHandler.GetEffect(204)) + "x clickpoints";
+        if (upgradeHandler.IsUpgradePurchased(304))
+            multiplierDisplay.text += "\n" + formatter.FormatNumber(upgradeHandler.GetEffect(304)) + "x experience";
         if (upgradeHandler.IsUpgradePurchased(31))
             multiplierDisplay.text += "\n+" + (Level * 0.75f).ToString("N1") + "% extra coin chance";
         if (upgradeHandler.IsUpgradePurchased(45))

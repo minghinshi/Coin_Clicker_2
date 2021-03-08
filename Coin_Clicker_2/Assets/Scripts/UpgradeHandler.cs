@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UpgradeHandler : MonoBehaviour
 {
     public static UpgradeHandler instance;
+    [SerializeField]
     private TierHandler tierHandler;
     private NumberFormatter formatter;
     public Dictionary<int, Upgrade> upgrades = new Dictionary<int, Upgrade>();

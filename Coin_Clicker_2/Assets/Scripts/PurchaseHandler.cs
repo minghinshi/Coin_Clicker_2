@@ -18,12 +18,6 @@ public class PurchaseHandler : MonoBehaviour
         player = Player.instance;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public bool IsAffordable(double cost) {
         if (player.Coins >= cost) {
             player.Coins -= cost;

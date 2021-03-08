@@ -24,6 +24,7 @@ public class TierHandler : TooltipContentHandler
     public GameObjectsInTier[] gameObjectsInTiers;
 
     public Text TierDisplay;
+    public RectTransform upgradesRectTransform;
 
     public int tier = 0;
     double cost {
@@ -33,11 +34,14 @@ public class TierHandler : TooltipContentHandler
     }
     public string[] namesOfItemsToUnlock;
 
+    private void Awake()
+    {
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        instance = this;
         purchaseHandler = PurchaseHandler.instance;
         upgradeHandler = UpgradeHandler.instance;
         tooltip = Tooltip.instance;
@@ -66,5 +70,6 @@ public class TierHandler : TooltipContentHandler
         tier++;
         TierDisplay.text = "Tier " + tier;
         upgradeHandler.UnlockUpgrades(tier);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(upgradesRectTransform);
     }
 }
