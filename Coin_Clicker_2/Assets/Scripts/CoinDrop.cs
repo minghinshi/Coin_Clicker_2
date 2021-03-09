@@ -33,10 +33,10 @@ public class CoinDrop : MonoBehaviour
     public double ResourceMultiplier() {
         double d = 160;
         if (upgradeHandler.IsUpgradePurchased(26)) {
-            double clicks = auto.clicksPerSec * 7.5;
+            double clicks = auto.ClicksPerSec * 7.5;
             if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(16))
                 clicks /= 1.15;
-            if (auto.surgeTimeRemaining > 0)
+            if (auto.SurgeDuration > 0)
                 clicks /= 2;
             d += clicks;
         }
@@ -196,7 +196,7 @@ public class CoinDrop : MonoBehaviour
     public void OnCoinClick(GameObject coinObject) {
         clickedCoin = coinObject;
         GiveResources();
-        auto.surgeTimeRemaining += upgradeHandler.GetEffect(28);
+        auto.SurgeDuration += upgradeHandler.GetEffect(28);
         player.experienceNeededToLevelUp *= upgradeHandler.GetEffect(30);
         if (UnityEngine.Random.Range(0f,1f) < upgradeHandler.GetEffect(34))
             multi.freeLevels++;

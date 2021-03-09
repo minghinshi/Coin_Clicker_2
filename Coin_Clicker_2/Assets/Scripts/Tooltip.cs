@@ -67,11 +67,11 @@ public class Tooltip : MonoBehaviour
         }
         if (upgradeHandler.IsUpgradePurchased(18))
         {
-            objects.Add(1 + autoclicker.bonus);
+            objects.Add(1 + autoclicker.autoclickerPower);
         }
-        if (upgradeHandler.IsUpgradePurchased(32) && autoclicker.surgeTimeRemaining > 0f)
+        if (upgradeHandler.IsUpgradePurchased(32) && autoclicker.SurgeDuration > 0f)
         {
-            objects.Add(1 + (autoclicker.surgeTimeRemaining * 0.05));
+            objects.Add(1 + (autoclicker.SurgeDuration * 0.05));
         }
         objects.Add(progressBar.GetTotalMultiplier());
         if (upgradeHandler.IsUpgradePurchased(51))

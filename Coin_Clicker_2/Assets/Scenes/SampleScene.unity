@@ -7650,7 +7650,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 60}
+  m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &686498193
 MonoBehaviour:
@@ -9947,9 +9947,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeUntilClick: 1
-  surgeTimeRemaining: 0
-  bonus: 0
-  level: 0
+  autoclickerPower: 0
+  autoclickerLevel: 0
   progressBar: {fileID: 670285281}
   statDisplay: {fileID: 1729461289}
   costDisplay: {fileID: 1736622242}

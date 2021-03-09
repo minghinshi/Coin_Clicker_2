@@ -48,7 +48,7 @@ public class NavigationButton : TooltipContentHandler
                 break;
             case 3:
                 stringToDisplay = "Autoclicker\n\n<color=lime>{0}</color> Total Levels";
-                objects.Add(autoclicker.Level);
+                objects.Add(autoclicker.TotalLevel);
                 break;
             case 4:
                 stringToDisplay = "Diamond Upgrades";

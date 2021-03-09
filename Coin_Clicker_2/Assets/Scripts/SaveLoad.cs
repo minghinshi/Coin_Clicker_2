@@ -66,9 +66,9 @@ public class SaveLoad : MonoBehaviour
         Save("ExperienceReq", player.experienceNeededToLevelUp.ToString("R"));
         Save("MultiLevel", multiplier.level.ToString());
         Save("Clickpoints", player.Clickpoints.ToString("R"));
-        Save("AutoclickerLevel", autoclicker.level.ToString());
-        Save("AutoclickerBonus", autoclicker.bonus.ToString("R"));
-        Save("AutoclickerSurge", autoclicker.surgeTimeRemaining.ToString("R"));
+        Save("AutoclickerLevel", autoclicker.autoclickerLevel.ToString());
+        Save("AutoclickerBonus", autoclicker.autoclickerPower.ToString("R"));
+        Save("AutoclickerSurge", autoclicker.SurgeDuration.ToString("R"));
         Save("DropCooldown", coinDrop.TimePerDrop().ToString("R"));
         Save("FreeLevels", multiplier.freeLevels.ToString());
         Save("PlatinumCoins", player.diamondCoins.ToString("R"));
@@ -112,9 +112,9 @@ public class SaveLoad : MonoBehaviour
         player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "16"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
         player.Level = int.Parse(Load("Level", "0"));
-        autoclicker.level = int.Parse(Load("AutoclickerLevel", "0"));
-        autoclicker.bonus = double.Parse(Load("AutoclickerBonus", "0"));
-        autoclicker.surgeTimeRemaining = float.Parse(Load("AutoclickerSurge", "0"));
+        autoclicker.autoclickerLevel = int.Parse(Load("AutoclickerLevel", "1"));
+        autoclicker.autoclickerPower = double.Parse(Load("AutoclickerBonus", "0"));
+        autoclicker.SurgeDuration = float.Parse(Load("AutoclickerSurge", "0"));
         coinDrop.dropCooldown = float.Parse(Load("DropCooldown", "60"));
         multiplier.freeLevels = int.Parse(Load("FreeLevels", "0"));
         player.diamondCoins = double.Parse(Load("PlatinumCoins", "0"));

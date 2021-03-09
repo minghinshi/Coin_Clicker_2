@@ -94,7 +94,7 @@ public class UpgradeHandler : MonoBehaviour
                     return 0;
                 return 1;
             }
-            return upgrades[id].GetEffect();
+            return upgrades[id].Effect;
         }
         catch (KeyNotFoundException) { return 1; }
     }

@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     {
         get {
             double d = 0.1;
-            d *= upgradeHandler.GetTotalEffect(102, 103, 18, 32, 51);
+            d *= upgradeHandler.GetTotalEffect(102, 103, 105, 32, 51);
             d *= progressBar.GetTotalMultiplier();
             d *= multi.CoinMulti;
             return d;
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
         get
         {
             double d = 0.1;
-            d *= upgradeHandler.GetTotalEffect(201, 203, 204, 19, 33, 42);
+            d *= upgradeHandler.GetTotalEffect(201, 203, 204, 205, 33, 42);
             return d;
         }
     }
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
         get
         {
             double d = CoinsPerClick;
-            d *= upgradeHandler.GetTotalEffect(301, 302, 304, 20);
+            d *= upgradeHandler.GetTotalEffect(301, 302, 304, 305);
             return d;
         }
     }
