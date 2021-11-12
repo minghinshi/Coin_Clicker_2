@@ -9,9 +9,6 @@ public class ProgressBarHandler : MonoBehaviour
     public static ProgressBarHandler instance;
 
     private Player player;
-    private CoinDrop coinDrop;
-    private Clicker clicker;
-    private UpgradeHandler upgradeHandler;
 
     public float[] timeLeft = new float[6];
     public float[] timeNeeded = new float[6];
@@ -24,8 +21,8 @@ public class ProgressBarHandler : MonoBehaviour
     public int speedMultiLevel2;
     public float SpeedMulti() {
         float f = speedMultiLevel * speedMultiLevel2;
-        if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(52))
-            f *= 2;
+        /*if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(52))
+            f *= 2;*/
         return f;
     }
 
@@ -66,15 +63,12 @@ public class ProgressBarHandler : MonoBehaviour
     void Start()
     {
         player = Player.instance;
-        coinDrop = CoinDrop.instance;
-        clicker = Clicker.instance;
-        upgradeHandler = UpgradeHandler.instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (upgradeHandler.IsUpgradePurchased(48))
+        /*if (upgradeHandler.IsUpgradePurchased(48))
         {
             for (int i = 0; i < timeLeft.Length; i++)
             {
@@ -94,14 +88,10 @@ public class ProgressBarHandler : MonoBehaviour
                 timeDisplay[i].text = FloatToTime(timeLeft[i]/SpeedMulti());
                 multiDisplay[i].text = barMulti[i].ToString("N2") + "x";
             }
-        }
+        }*/
 
-        TotalMultiDisplay.text = NumberFormatter.instance.FormatNumber(GetTotalMultiplier()) + "x coins";
-        SpeedDisplay.text = NumberFormatter.instance.FormatNumber(SpeedMulti()) + "x speed";
-    }
-
-    void UpdateProgressBar() {
-
+        TotalMultiDisplay.text = NumberFormatter.FormatNumber(GetTotalMultiplier()) + "x coins";
+        SpeedDisplay.text = NumberFormatter.FormatNumber(SpeedMulti()) + "x speed";
     }
 
     public void BuySpeedMulti() {

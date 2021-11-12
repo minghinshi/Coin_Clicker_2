@@ -4,35 +4,47 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class GameObjectsInTier {
-    public GameObject[] gameObjects;
+public class Feature {
+    [SerializeField] string nameOfFeatureToUnlock;
+    [SerializeField] GameObject rowOfUpgrades;
+    [SerializeField] GameObject[] elementsToShow;
 
-    public void SetGameObjectsAsVisible()
+    public Feature() { 
+    
+    }
+
+    public Transform GetTransformOfRowOfUpgrades() {
+        return rowOfUpgrades.transform;
+    }
+
+    public void ActivateFeature()
     {
-        foreach (GameObject go in gameObjects)
-            go.SetActive(true);
+        foreach (GameObject gameObject in elementsToShow)
+            gameObject.SetActive(true);
+        rowOfUpgrades.SetActive(true);
+    }
+
+    public String GetTierName() {
+        return nameOfFeatureToUnlock;
     }
 }
 
-public class TierHandler : TooltipContentHandler
+public class TierHandler : MonoBehaviour
 {
     public static TierHandler instance;
-    private PurchaseHandler purchaseHandler;
-    private UpgradeHandler upgradeHandler;
-    private NumberFormatter formatter;
+    PurchaseHandler purchaseHandler;
+    TooltipDisplayer tooltipDisplayer;
 
-    public GameObjectsInTier[] gameObjectsInTiers;
+    [SerializeField] Feature[] features;
+    [SerializeField] Text TierDisplay;
+    [SerializeField] RectTransform upgradesRectTransform;
 
-    public Text TierDisplay;
-    public RectTransform upgradesRectTransform;
-
-    public int tier = 0;
+    int tier = 0;
     double cost {
         get {
-            return Math.Pow(2, Math.Pow(tier + 1, 2));
+            return 10 * Math.Pow(1.15, Math.Pow(Math.Pow(tier + 1, 2) - 1, 2));
         }
     }
-    public string[] namesOfItemsToUnlock;
 
     private void Awake()
     {
@@ -43,22 +55,17 @@ public class TierHandler : TooltipContentHandler
     void Start()
     {
         purchaseHandler = PurchaseHandler.instance;
-        upgradeHandler = UpgradeHandler.instance;
-        tooltip = Tooltip.instance;
-        formatter = NumberFormatter.instance;
+        tooltipDisplayer = GetComponent<TooltipDisplayer>();
 
-        upgradeHandler.UnlockUpgrades(1);
-    }
-
-    public override void UpdateTooltipText()
-    {
-        stringToDisplay = "Increase your tier to unlock content\n" +
-            "and further boost your coins.\n" +
-            "<color=red>This also doubles your upgrade cost!</color>\n" +
-            "<color=lime>Next: Unlock {0}.</color>\n" +
-            "<color=yellow>Cost: {1} coins.</color>";
-        objects.Add(namesOfItemsToUnlock[tier]);
-        objects.Add(formatter.FormatNumber(cost));
+        tooltipDisplayer.SetStringToDisplay(delegate
+        {
+            return string.Format(
+                "Increase your tier to unlock content\n" +
+                "and further boost your coins.\n" +
+                "<color=red>This also increases your upgrade cost!</color>\n" +
+                "<color=lime>Next: Unlock {0}.</color>\n" +
+                "<color=yellow>Cost: {1} coins.</color>", features[tier+1].GetTierName(), NumberFormatter.FormatNumber(cost));
+        });
     }
 
     public void AttemptPurchase() {
@@ -66,10 +73,22 @@ public class TierHandler : TooltipContentHandler
     }
 
     public void BuyTier() {
-        gameObjectsInTiers[tier].SetGameObjectsAsVisible();
         tier++;
+        features[tier].ActivateFeature();
         TierDisplay.text = "Tier " + tier;
-        upgradeHandler.UnlockUpgrades(tier);
+        UpgradeHandler.SetUpgradesAsVisible(tier);
         LayoutRebuilder.ForceRebuildLayoutImmediate(upgradesRectTransform);
+    }
+
+    public Feature GetFeature(int rowNumber) {
+        return features[rowNumber];
+    }
+
+    public int GetNumberOfFeatures() {
+        return features.Length;
+    }
+
+    public int GetTier() {
+        return tier;
     }
 }

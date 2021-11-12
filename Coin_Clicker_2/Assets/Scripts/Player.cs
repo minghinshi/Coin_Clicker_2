@@ -6,19 +6,19 @@ public class Player : MonoBehaviour {
     public static Player instance;
 
     private Multiplier multi;
-    private Autoclicker autoclicker;
     private ProgressBarHandler progressBar;
-    private UpgradeHandler upgradeHandler;
 
     [SerializeField]
     private double coins;
     public double CoinsPerClick
     {
         get {
-            double d = 0.1;
-            d *= upgradeHandler.GetTotalEffect(102, 103, 105, 32, 51);
-            d *= progressBar.GetTotalMultiplier();
-            d *= multi.CoinMulti;
+            double d = 1;
+            d *= UpgradeHandler.GetEffectOfUpgrade(0, 1)
+                * UpgradeHandler.GetEffectOfUpgrade(0, 2)
+                * UpgradeHandler.GetEffectOfUpgrade(0, 4)
+                * progressBar.GetTotalMultiplier()
+                * multi.CoinMulti;
             return d;
         }
     }
@@ -27,8 +27,8 @@ public class Player : MonoBehaviour {
         get
         {
             double d = 0;
-            if (IsUpgradePurchased(41))
-                d += ExperiencePerClick * diamondCoins * 0.000225;
+            /*if (IsUpgradePurchased(41))
+                d += ExperiencePerClick * diamondCoins * 0.000225;*/
             return d;
         }
     }
@@ -36,8 +36,11 @@ public class Player : MonoBehaviour {
     public double ClickpointsPerClick {
         get
         {
-            double d = 0.1;
-            d *= upgradeHandler.GetTotalEffect(201, 203, 204, 205, 33, 42);
+            double d = 1;
+            d *= UpgradeHandler.GetEffectOfUpgrade(1, 0)
+                * UpgradeHandler.GetEffectOfUpgrade(1, 2)
+                * UpgradeHandler.GetEffectOfUpgrade(1, 3)
+                * UpgradeHandler.GetEffectOfUpgrade(1, 4);
             return d;
         }
     }
@@ -58,7 +61,10 @@ public class Player : MonoBehaviour {
         get
         {
             double d = CoinsPerClick;
-            d *= upgradeHandler.GetTotalEffect(301, 302, 304, 305);
+            d *= UpgradeHandler.GetEffectOfUpgrade(2, 0)
+                * UpgradeHandler.GetEffectOfUpgrade(2, 1)
+                * UpgradeHandler.GetEffectOfUpgrade(2, 3)
+                * UpgradeHandler.GetEffectOfUpgrade(2, 4);
             return d;
         }
     }
@@ -67,7 +73,7 @@ public class Player : MonoBehaviour {
         get => coins;
         set {
             coins = value;
-            coinsDisplay.text = NumberFormatter.instance.FormatNumber(value);
+            coinsDisplay.text = NumberFormatter.FormatNumber(value);
         }
     }
 
@@ -75,7 +81,7 @@ public class Player : MonoBehaviour {
         get => clickpoints;
         set {
             clickpoints = value;
-            clickpointsDisplay.text = NumberFormatter.instance.FormatNumber(Clickpoints);
+            clickpointsDisplay.text = NumberFormatter.FormatNumber(Clickpoints);
         }
     }
 
@@ -130,21 +136,19 @@ public class Player : MonoBehaviour {
     // Use this for initialization
     void Start () {
         multi = Multiplier.instance;
-        autoclicker = Autoclicker.instance;
         progressBar = ProgressBarHandler.instance;
-        upgradeHandler = UpgradeHandler.instance;
     }
 	
     public void UpdateDisplays() {
-        if (IsUpgradePurchased(3))
-            UpdateExperienceDisplays();
-        if (IsUpgradePurchased(36))
-            diamondDisplay.text = diamondCoins.ToString("N1");
+        /*if (IsUpgradePurchased(3))
+            UpdateExperienceDisplays();*/
+        /*if (IsUpgradePurchased(36))
+            diamondDisplay.text = diamondCoins.ToString("N1");*/
     }
 
     void UpdateExperienceDisplays() {
         experienceBar.value = Convert.ToSingle(experience / experienceNeededToLevelUp);
-        experienceDisplay.text = NumberFormatter.instance.FormatNumber(experience) + " / " + NumberFormatter.instance.FormatNumber(experienceNeededToLevelUp);
+        experienceDisplay.text = NumberFormatter.FormatNumber(experience) + " / " + NumberFormatter.FormatNumber(experienceNeededToLevelUp);
     }
 
     public void UnlockCoinDrop() {
@@ -172,12 +176,8 @@ public class Player : MonoBehaviour {
     void LevelUp() {
         experience -= experienceNeededToLevelUp;
         Coins += experienceNeededToLevelUp;
-        if (!(IsUpgradePurchased(43) && UnityEngine.Random.Range(0f, 1f) < (Math.Log10(diamondCoins + 1) * 0.1)))
-            experienceNeededToLevelUp *= 2;
+        if (!(UnityEngine.Random.Range(0f, 1f) < UpgradeHandler.GetEffectOfUpgrade(2, 5)))
+            experienceNeededToLevelUp *= 1.15;
         Level++;
-    }
-
-    bool IsUpgradePurchased(int id) {
-        return upgradeHandler.IsUpgradePurchased(id);
     }
 }

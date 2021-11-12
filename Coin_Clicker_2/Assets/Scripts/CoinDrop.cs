@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class CoinDrop : MonoBehaviour
 {
     public static CoinDrop instance;
 
     private Player player;
-    private Autoclicker auto;
-    private Clicker clicker;
-    private Multiplier multi;
     private Options options;
-    private UpgradeHandler upgradeHandler;
 
     public float dropCooldown;
     public GameObject coinInstance;
@@ -30,42 +24,47 @@ public class CoinDrop : MonoBehaviour
     public Color DiamondColor;
     public Color PlatinumColor;
 
-    public double ResourceMultiplier() {
+    public double ResourceMultiplier()
+    {
         double d = 160;
-        if (upgradeHandler.IsUpgradePurchased(26)) {
+        /*if (upgradeHandler.IsUpgradePurchased(26)) {
             double clicks = auto.ClicksPerSec * 7.5;
             if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(16))
                 clicks /= 1.15;
             if (auto.SurgeDuration > 0)
                 clicks /= 2;
             d += clicks;
-        }
+        }*/
         return d;
     }
 
-    public double DiamondCoinsPerDrop() {
+    public double DiamondCoinsPerDrop()
+    {
         double d = 1 + (0.01d * dropCount);
-        d *= upgradeHandler.GetTotalEffect(45, 46);
+        /*d *= upgradeHandler.GetTotalEffect(45, 46);*/
         if (isConvertEnabled)
             d *= ConvertMultiplier();
         return d;
     }
 
-    double ConvertMultiplier() {
-        return upgradeHandler.GetTotalEffect(47, 54);
+    double ConvertMultiplier()
+    {
+        return 1; /*upgradeHandler.GetTotalEffect(47, 54);*/
     }
 
-    public float TimePerDrop() {
+    public float TimePerDrop()
+    {
         double d = 60/* * upgradeHandler.GetTotalEffect(29)*/;
         return Convert.ToSingle(d);
     }
 
     public int dropsLeft;
-    public int TotalDrops() {
+    public int TotalDrops()
+    {
         int i = 1;
-        double chance = upgradeHandler.GetTotalEffect(false, 27, 31);
+        /*double chance = upgradeHandler.GetTotalEffect(false, 27, 31);
         if (UnityEngine.Random.Range(0f, 1f) < chance)
-            i++;
+            i++;*/
         return i;
     }
 
@@ -86,11 +85,7 @@ public class CoinDrop : MonoBehaviour
     void Start()
     {
         player = Player.instance;
-        auto = Autoclicker.instance;
-        clicker = Clicker.instance;
         options = Options.instance;
-        multi = Multiplier.instance;
-        upgradeHandler = UpgradeHandler.instance;
     }
 
     // Update is called once per frame
@@ -104,7 +99,8 @@ public class CoinDrop : MonoBehaviour
             convertText.text = "Sacrifice enabled\n" + ConvertMultiplier().ToString("N2") + "x diamond coins";
     }
 
-    void UpdateDropCooldown() {
+    void UpdateDropCooldown()
+    {
         dropCooldown -= Time.deltaTime;
         DropTimer.value = (TimePerDrop() - dropCooldown) / TimePerDrop();
         if (dropCooldown <= 0f)
@@ -119,14 +115,16 @@ public class CoinDrop : MonoBehaviour
         }
     }
 
-    public void Drop() {
+    public void Drop()
+    {
         dropsLeft--;
         SpawnCoin();
         if (options.bell)
             coinDropDing.Play();
     }
 
-    void SpawnCoin() {
+    void SpawnCoin()
+    {
         Vector3 randomPosOffset = new Vector3(UnityEngine.Random.Range(-300f, 300f), 0);
         GameObject coinObject = (GameObject)Instantiate(coinInstance, transform.position + randomPosOffset, Quaternion.identity, transform.parent);
 
@@ -134,7 +132,7 @@ public class CoinDrop : MonoBehaviour
         coinButton.onClick.AddListener(() => OnCoinClick(coinObject));
 
         Rigidbody2D rigidbody = coinObject.GetComponent<Rigidbody2D>();
-        rigidbody.gravityScale *= Convert.ToSingle(upgradeHandler.GetEffect(35));
+        /*rigidbody.gravityScale *= Convert.ToSingle(upgradeHandler.GetEffect(35));*/
 
         if (platinum)
         {
@@ -143,23 +141,26 @@ public class CoinDrop : MonoBehaviour
         }
     }
 
-    void CollectDiamondCoin() {
+    void CollectDiamondCoin()
+    {
         GameObject Display = Instantiate(DisplayPrefab, clickedCoin.transform.position, Quaternion.identity, clickedCoin.transform.parent);
         Text DisplayText = Display.GetComponent<CoinDisplay>().display;
         if (clickedCoin.GetComponent<Image>().sprite == platinumSprite)
         {
             player.diamondCoins += DiamondCoinsPerDrop() * 2;
-            DisplayText.text = NumberFormatter.instance.FormatNumber(DiamondCoinsPerDrop() * 2);
+            DisplayText.text = NumberFormatter.FormatNumber(DiamondCoinsPerDrop() * 2);
             DisplayText.color = PlatinumColor;
         }
-        else {
+        else
+        {
             player.diamondCoins += DiamondCoinsPerDrop();
-            DisplayText.text = NumberFormatter.instance.FormatNumber(DiamondCoinsPerDrop());
+            DisplayText.text = NumberFormatter.FormatNumber(DiamondCoinsPerDrop());
             DisplayText.color = DiamondColor;
         }
     }
 
-    void SpawnCoinParticles() {
+    void SpawnCoinParticles()
+    {
         for (int i = 0; i < 25; i++)
         {
             GameObject coin = Instantiate(coinParticle, clickedCoin.transform.position, Quaternion.identity, player.ParticleHolder);
@@ -170,37 +171,39 @@ public class CoinDrop : MonoBehaviour
         }
     }
 
-    void GiveResources() {
+    void GiveResources()
+    {
         player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * ResourceMultiplier();
-        if (upgradeHandler.IsUpgradePurchased(0))
+        /*if (upgradeHandler.IsUpgradePurchased(0))
             player.Clickpoints += player.ClickpointsPerClick * ResourceMultiplier();
         if (upgradeHandler.IsUpgradePurchased(3))
             player.Experience += player.ExperiencePerClick * ResourceMultiplier();
         if (upgradeHandler.IsUpgradePurchased(36))
-            CollectDiamondCoin();
+            CollectDiamondCoin();*/
     }
 
-    void ConvertCoins() {
+    void ConvertCoins()
+    {
         player.Coins = 0;
-        if (upgradeHandler.IsUpgradePurchased(54))
-        {
-            player.Clickpoints = 0;
-        }
+        /*if (upgradeHandler.IsUpgradePurchased(54))
+            player.Clickpoints = 0;*/
     }
 
-    void PlayCollectionSound() {
+    void PlayCollectionSound()
+    {
         dropCollect.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
         dropCollect.Play();
     }
 
-    public void OnCoinClick(GameObject coinObject) {
+    public void OnCoinClick(GameObject coinObject)
+    {
         clickedCoin = coinObject;
         GiveResources();
-        auto.SurgeDuration += upgradeHandler.GetEffect(28);
+        /*auto.SurgeDuration += upgradeHandler.GetEffect(28);
         player.experienceNeededToLevelUp *= upgradeHandler.GetEffect(30);
         if (UnityEngine.Random.Range(0f,1f) < upgradeHandler.GetEffect(34))
             multi.freeLevels++;
-        dropCount += Convert.ToInt32(upgradeHandler.GetEffect(40));
+        dropCount += Convert.ToInt32(upgradeHandler.GetEffect(40));*/
         if (isConvertEnabled)
             ConvertCoins();
         if (options.collectionParticles)
@@ -210,7 +213,8 @@ public class CoinDrop : MonoBehaviour
         Destroy(coinObject);
     }
 
-    public void ToggleConvert() {
+    public void ToggleConvert()
+    {
         isConvertEnabled = !isConvertEnabled;
     }
 }

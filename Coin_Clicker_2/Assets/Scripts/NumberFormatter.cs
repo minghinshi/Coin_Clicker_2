@@ -4,20 +4,12 @@ using System.Collections;
 
 public class NumberFormatter : MonoBehaviour {
 
-    public static NumberFormatter instance;
-    public Options options;
+    static string[] suffixes = {"k", "M", "B", "T", "q", "Q", "s", "S", "O", "N", "D", "UD", "DD", "TD", "qD", "QD", "sD", "SD", "OD", "ND"};
 
-    public string[] suffixes;
-
-    private void Awake()
-    {
-        instance = this;
-    }
-
-    public string FormatNumber(double number) {
+    public static string FormatNumber(double number) {
         if (number < 1000)
             return number.ToString("N2");
-        else if (number < 1e66 && !options.formatSmallNumbers)
+        else if (number < 1e66 && !Options.instance.formatSmallNumbers)
         {
             int magnitude = Convert.ToInt32(Math.Floor(Math.Log10(number)));
             string suffix = suffixes[Mathf.FloorToInt((magnitude - 3) / 3f)];
@@ -31,17 +23,17 @@ public class NumberFormatter : MonoBehaviour {
 
             return (number / Math.Pow(10, magnitude - magnitude % 3)).ToString("0." + decimalPlaces) + " " + suffix;
         }
-        else if (options.useLogarithm)
+        else if (Options.instance.useLogarithm)
             return Logarithmic(number);
         else
             return Scientific(number);
     }
 
-    public string Scientific(double number) {
+    static string Scientific(double number) {
         return number.ToString("0.##e0");
     }
 
-    public string Logarithmic(double number) {
+    static string Logarithmic(double number) {
         double log = Math.Log10(number);
         return "e" + log.ToString("0.##");
     }

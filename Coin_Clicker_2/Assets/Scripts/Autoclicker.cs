@@ -8,12 +8,8 @@ public class Autoclicker : MonoBehaviour
 
     private Player player;
     private Clicker clicker;
-    private Multiplier multi;
     private DiamondUpgrades platinum;
-    private CoinDrop drop;
-    private UpgradeHandler upgradeHandler;
     private TierHandler tierHandler;
-    private NumberFormatter formatter;
 
     public float timeUntilClick;
     private double surgeDuration;
@@ -21,15 +17,18 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = TotalLevel;
-            d *= upgradeHandler.GetTotalEffect(502, 503);
-            d *= SpeedMultiplier;
+            double d = 1 + 0.15 * TotalLevel;
+            d *= SpeedMultiplier
+            * UpgradeHandler.GetEffectOfUpgrade(4, 0)
+            * UpgradeHandler.GetEffectOfUpgrade(4, 2);
+            if (UpgradeHandler.IsUpgradePurchased(4, 1) && Clicker.instance.coinIsHeld)
+                d *= 2;
             if (SurgeDuration > 0)
                 d *= 2;
             return d;
         }
     }
-    public double ClickOverflowBonus
+    public double ClicksPerTick
     {
         get
         {
@@ -42,7 +41,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = Math.Pow(2, autoclickerLevel + 1);
+            double d = 10 * Math.Pow(1.15, autoclickerLevel);
             return d;
         }
     }
@@ -51,15 +50,14 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = 0.01;
-            d *= upgradeHandler.GetEffect(501);
+            double d = 1;
             return d;
         }
     }
     public double SpeedMultiplier {
         get
         {
-            return Math.Pow(autoclickerPower + 1, 0.2);
+            return Math.Pow(1 + autoclickerPower * 0.001, 0.5);
         }
     }
 
@@ -68,7 +66,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            int i = autoclickerLevel + platinum.diamondAutoLevels + (int)upgradeHandler.GetEffect(504);
+            int i = autoclickerLevel + platinum.diamondAutoLevels + (int)UpgradeHandler.GetEffectOfUpgrade(4, 3);
             return i;
         }
     }
@@ -102,12 +100,8 @@ public class Autoclicker : MonoBehaviour
     {
         player = Player.instance;
         clicker = Clicker.instance;
-        multi = Multiplier.instance;
         platinum = DiamondUpgrades.instance;
-        drop = CoinDrop.instance;
-        upgradeHandler = UpgradeHandler.instance;
         tierHandler = TierHandler.instance;
-        formatter = NumberFormatter.instance;
     }
 
     // Update is called once per frame
@@ -118,18 +112,18 @@ public class Autoclicker : MonoBehaviour
             Autoclick();
 
         progressBar.value = 1 - timeUntilClick;
-        if (upgradeHandler.IsUpgradePurchased(28)) UpdateSurgeDuration();
+        /*if (upgradeHandler.IsUpgradePurchased(28)) UpdateSurgeDuration();
         if (upgradeHandler.IsUpgradePurchased(44))
             if (UnityEngine.Random.Range(0f, 1f) < 1 - Mathf.Pow(0.9999f, Convert.ToSingle(ClickOverflowBonus)))
-                drop.platinum = true;
+                drop.platinum = true;*/
     }
 
     void Autoclick() {
         timeUntilClick++;
-        clicker.Click(ClickOverflowBonus);
+        clicker.Click(ClicksPerTick);
  
-        if (tierHandler.tier >= 4)
-            autoclickerPower += PowerIncrease* ClickOverflowBonus;
+        if (tierHandler.GetTier() >= 4)
+            autoclickerPower += PowerIncrease* ClicksPerTick;
     }
 
     void UpdateSurgeDuration() {
@@ -148,10 +142,10 @@ public class Autoclicker : MonoBehaviour
     }
 
     public void UpdateDisplays() {
-        statDisplay.text = ClicksPerSec.ToString("N1") + " clicks/sec";
-        costDisplay.text = NumberFormatter.instance.FormatNumber(Cost);
+        statDisplay.text = NumberFormatter.FormatNumber(ClicksPerSec) + " clicks/s";
+        costDisplay.text = NumberFormatter.FormatNumber(Cost);
 
-        if (tierHandler.tier >= 4)
-            statDisplay.text += String.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", formatter.FormatNumber(autoclickerPower), formatter.FormatNumber(SpeedMultiplier));
+        if (tierHandler.GetTier() >= 4)
+            statDisplay.text += String.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplier));
     }
 }

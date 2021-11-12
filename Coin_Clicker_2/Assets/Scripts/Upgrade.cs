@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -300,3 +301,4 @@ public class Upgrade : TooltipContentHandler
         stringToDisplay += "\n<color=#90ee90>Currently: {0}x</color>";
     }
 }
+*/

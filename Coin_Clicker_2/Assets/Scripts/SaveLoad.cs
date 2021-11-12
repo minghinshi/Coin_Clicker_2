@@ -14,7 +14,6 @@ public class SaveLoad : MonoBehaviour
     public DiamondUpgrades platinum;
     public ProgressBarHandler progressBar;
     public Options options;
-    private UpgradeHandler upgradeHandler;
     private TierHandler tierHandler;
 
     private void Awake()
@@ -24,7 +23,6 @@ public class SaveLoad : MonoBehaviour
 
     void Start() {
         player = Player.instance;
-        upgradeHandler = UpgradeHandler.instance;
         tierHandler = TierHandler.instance;
         LoadGameData();
     }
@@ -53,10 +51,13 @@ public class SaveLoad : MonoBehaviour
 
     public void SaveGameData() {
         //Upgrades
-        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
+        Upgrade[][] gridOfUpgrades = UpgradeHandler.GetGridOfUpgrades();
+        for (int row = 0; row < gridOfUpgrades.Length; row++)
         {
-            int id = upgrade.Key;
-            Save("Upgrade" + id + "Purchased", upgrade.Value.isPurchased.ToString());
+            for (int col = 0; col < gridOfUpgrades[row].Length; col++)
+            {
+                Save(string.Format("Upgrade {0}, {1} Purchased", row, col), UpgradeHandler.IsUpgradePurchased(row, col).ToString());
+            }
         }
 
         //Main Stats (Related to gameplay)
@@ -76,7 +77,7 @@ public class SaveLoad : MonoBehaviour
         Save("PlatinumMulti", platinum.diamondMultiLevels.ToString());
         Save("PlatinumDrop", platinum.dropPurchases.ToString());
         Save("DropCount", coinDrop.dropCount.ToString());
-        Save("Tier", tierHandler.tier.ToString());
+        Save("Tier", tierHandler.GetTier().ToString());
 
         //Progress Bar Stats
         for (int i = 0; i < 6; i++)
@@ -109,10 +110,10 @@ public class SaveLoad : MonoBehaviour
         player.Coins = double.Parse(Load("Coins", "0"));
         player.Clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
-        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "16"));
+        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
         player.Level = int.Parse(Load("Level", "0"));
-        autoclicker.autoclickerLevel = int.Parse(Load("AutoclickerLevel", "1"));
+        autoclicker.autoclickerLevel = int.Parse(Load("AutoclickerLevel", "0"));
         autoclicker.autoclickerPower = double.Parse(Load("AutoclickerBonus", "0"));
         autoclicker.SurgeDuration = float.Parse(Load("AutoclickerSurge", "0"));
         coinDrop.dropCooldown = float.Parse(Load("DropCooldown", "60"));
@@ -125,17 +126,19 @@ public class SaveLoad : MonoBehaviour
 
         //Tier
         int targetTier = int.Parse(Load("Tier", "0"));
-        while (tierHandler.tier < targetTier) {
+        while (tierHandler.GetTier() < targetTier) {
             tierHandler.BuyTier();
         }
 
         //Upgrades
-        foreach (KeyValuePair<int, Upgrade> upgrade in upgradeHandler.upgrades)
+        Upgrade[][] gridOfUpgrades = UpgradeHandler.GetGridOfUpgrades();
+        for (int row = 0; row < gridOfUpgrades.Length; row++)
         {
-            bool purchased = bool.Parse(Load("Upgrade" + upgrade.Key + "Purchased", "FALSE"));
-            if (purchased)
+            for (int col = 0; col < gridOfUpgrades[row].Length; col++)
             {
-                upgrade.Value.PurchaseUpgrade();
+                bool isPurchased = bool.Parse(Load(string.Format("Upgrade {0}, {1} Purchased", row, col), "FALSE"));
+                if (isPurchased)
+                    gridOfUpgrades[row][col].PurchaseUpgrade(true);
             }
         }
 

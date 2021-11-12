@@ -1,16 +1,15 @@
 fileFormatVersion: 2
-guid: bbb8c12cf52897a4f968a2aedc843f1e
+guid: cde8f47d076bb0e4bb33a30f7e50bb42
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 16
+  fontSize: 20
   forceTextureCase: -2
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Roboto
   fontNames:
-  - Roboto
+  - Titillium Web
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

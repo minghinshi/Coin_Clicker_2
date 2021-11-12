@@ -4,30 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class NavigationButton : TooltipContentHandler
+public class NavigationButton : MonoBehaviour
 {
     public CanvasGroup targetPanel;
     private NavigationBar bar;
-    private Autoclicker autoclicker;
-    private Multiplier multiplier;
-    private UpgradeHandler upgradeHandler;
     private Button button;
     public int tooltipType;
 
     // Start is called before the first frame update
     void Start()
     {
-        tooltip = Tooltip.instance;
         bar = NavigationBar.instance;
-        autoclicker = Autoclicker.instance;
-        multiplier = Multiplier.instance;
-        upgradeHandler = UpgradeHandler.instance;
 
         button = GetComponent<Button>();
         button.onClick.AddListener(Toggle);
     }
 
-    public override void UpdateTooltipText() {
+    /*public override void UpdateTooltipText() {
         switch (tooltipType)
         {
             case 0:
@@ -63,7 +56,7 @@ public class NavigationButton : TooltipContentHandler
                 stringToDisplay = "<color=red>A tooltip should be here but it is missing.\nPlease report this bug.</color>";
                 break;
         }
-    }
+    }*/
 
     public void Toggle() {
         foreach (CanvasGroup panel in bar.panelsToNavigate) {

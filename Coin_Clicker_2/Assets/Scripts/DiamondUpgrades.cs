@@ -9,7 +9,6 @@ public class DiamondUpgrades : MonoBehaviour
 
     private Player player;
     private CoinDrop coinDrop;
-    private UpgradeHandler upgradeHandler;
 
     public double autoPrice {
         get
@@ -58,18 +57,17 @@ public class DiamondUpgrades : MonoBehaviour
     {
         player = Player.instance;
         coinDrop = CoinDrop.instance;
-        upgradeHandler = UpgradeHandler.instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (upgradeHandler.IsUpgradePurchased(37))
+        /*if (upgradeHandler.IsUpgradePurchased(37))
             AutoPriceDisplay.text = autoPrice.ToString("N0");
         if (upgradeHandler.IsUpgradePurchased(38))
             MultiPriceDisplay.text = multiPrice.ToString("N0");
         if (upgradeHandler.IsUpgradePurchased(39))
-            DropPriceDisplay.text = dropPrice.ToString("N0");
+            DropPriceDisplay.text = dropPrice.ToString("N0");*/
     }
 
     public void BuyAuto() {

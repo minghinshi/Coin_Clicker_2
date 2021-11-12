@@ -13,7 +13,6 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Multiplier multi;
     private Autoclicker autoclicker;
     private Options options;
-    private UpgradeHandler upgradeHandler;
     private TierHandler tierHandler;
 
     public AudioSource coinSource;
@@ -33,7 +32,6 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         multi = Multiplier.instance;
         autoclicker = Autoclicker.instance;
         options = Options.instance;
-        upgradeHandler = UpgradeHandler.instance;
         tierHandler = TierHandler.instance;
     }
 
@@ -53,11 +51,11 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Click(1);
     }
 
-    void SpawnCoinParticle(double overflowBonus) {
+    void SpawnCoinParticle(double clicksPerTick) {
         GameObject coin = Instantiate(coinPrefab, transform.position + new Vector3(Random.Range(-50f, 50f), Random.Range(-50f, 50f)), Quaternion.identity, player.ParticleHolder);
         Rigidbody2D rigidbody = coin.GetComponent<Rigidbody2D>();
         rigidbody.velocity = new Vector2(Random.Range(-500f, 500f), Random.Range(850f, 1000f));
-        coin.GetComponent<Coin>().coinValue = (player.CoinsPerClick + player.BonusCoinsPerClick) * overflowBonus;
+        coin.GetComponent<Coin>().coinValue = (player.CoinsPerClick + player.BonusCoinsPerClick) * clicksPerTick;
     }
 
     void PlayClickSoundEffect() {
@@ -65,15 +63,15 @@ public class Clicker : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         coinSource.Play();
     }
 
-    public void Click(double overflowBonus) {
-        if (options.clickParticles) SpawnCoinParticle(overflowBonus);
+    public void Click(double clicksPerTick) {
+        if (options.clickParticles) SpawnCoinParticle(clicksPerTick);
         if (options.sfx) PlayClickSoundEffect();
 
-        player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * overflowBonus;
-        if (tierHandler.tier >= 1)
-            player.Clickpoints += player.ClickpointsPerClick * overflowBonus;
-        if (tierHandler.tier >= 2)
-            player.Experience += player.ExperiencePerClick * overflowBonus;
+        player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * clicksPerTick;
+        if (tierHandler.GetTier() >= 1)
+            player.Clickpoints += player.ClickpointsPerClick * clicksPerTick;
+        if (tierHandler.GetTier() >= 2)
+            player.Experience += player.ExperiencePerClick * clicksPerTick;
 
         player.UpdateDisplays();
         multi.UpdateDisplays();
