@@ -13,18 +13,25 @@ public class Autoclicker : MonoBehaviour
 
     public float timeUntilClick;
     private double surgeDuration;
-    public double ClicksPerSec
+    public double BaseClicksPerSec
     {
         get
         {
             double d = 1 + 0.15 * TotalLevel;
-            d *= SpeedMultiplier
-            * UpgradeHandler.GetEffectOfUpgrade(4, 0)
-            * UpgradeHandler.GetEffectOfUpgrade(4, 2);
+            d *= SpeedMultiplierFromPower;
+            return d;
+        }
+    }
+
+    public double ClicksPerSec
+    {
+        get
+        {
+            double d = BaseClicksPerSec;
             if (UpgradeHandler.IsUpgradePurchased(4, 1) && Clicker.instance.coinIsHeld)
-                d *= 2;
+                d *= 5;
             if (SurgeDuration > 0)
-                d *= 2;
+                d *= 20;
             return d;
         }
     }
@@ -50,11 +57,13 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = 1;
+            double d = 1
+                * UpgradeHandler.GetEffectOfUpgrade(4, 0)
+                * UpgradeHandler.GetEffectOfUpgrade(4, 2);
             return d;
         }
     }
-    public double SpeedMultiplier {
+    public double SpeedMultiplierFromPower {
         get
         {
             return Math.Pow(1 + autoclickerPower * 0.001, 0.5);
@@ -112,8 +121,10 @@ public class Autoclicker : MonoBehaviour
             Autoclick();
 
         progressBar.value = 1 - timeUntilClick;
-        /*if (upgradeHandler.IsUpgradePurchased(28)) UpdateSurgeDuration();
-        if (upgradeHandler.IsUpgradePurchased(44))
+        if (UpgradeHandler.IsUpgradePurchased(5, 4))
+            UpdateSurgeDuration();
+
+        /*if (upgradeHandler.IsUpgradePurchased(44))
             if (UnityEngine.Random.Range(0f, 1f) < 1 - Mathf.Pow(0.9999f, Convert.ToSingle(ClickOverflowBonus)))
                 drop.platinum = true;*/
     }
@@ -132,13 +143,14 @@ public class Autoclicker : MonoBehaviour
     }
 
     public void Upgrade() {
-        if (player.Clickpoints >= Cost) {
+        while (player.Clickpoints >= Cost) {
             player.Clickpoints -= Cost;
             autoclickerLevel++;
-
-            player.UpdateDisplays();
-            UpdateDisplays();
+            if (!Input.GetKey(KeyCode.LeftShift))
+                break;
         }
+        player.UpdateDisplays();
+        UpdateDisplays();
     }
 
     public void UpdateDisplays() {
@@ -146,6 +158,6 @@ public class Autoclicker : MonoBehaviour
         costDisplay.text = NumberFormatter.FormatNumber(Cost);
 
         if (tierHandler.GetTier() >= 4)
-            statDisplay.text += String.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplier));
+            statDisplay.text += String.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplierFromPower));
     }
 }

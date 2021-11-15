@@ -23,7 +23,7 @@ public class Multiplier : MonoBehaviour {
 
     public double GetMultiplier()
     {
-        double d = 1 + (Level + freeLevels) * 0.15;
+        double d = 1 + Level * 0.15;
         d *= UpgradeHandler.GetEffectOfUpgrade(3, 2);
         return d;
     }
@@ -45,7 +45,7 @@ public class Multiplier : MonoBehaviour {
     public int level;
     public int Level {
         get {
-            return level + diamond.diamondMultiLevels;
+            return level + diamond.diamondMultiLevels + freeLevels;
         }
     }
     public int freeLevels;
@@ -67,32 +67,34 @@ public class Multiplier : MonoBehaviour {
     }
 
     public void Upgrade() {
-        if (player.Coins >= Cost) {
+        while (player.Coins >= Cost)
+        {
             player.Coins -= Cost;
             level++;
-
-            player.UpdateDisplays();
-            UpdateDisplays();
+            if (!Input.GetKey(KeyCode.LeftShift))
+                break;
         }
+        player.UpdateDisplays();
+        UpdateDisplays();
     }
 
     public void UpdateDisplays() {
         costDisplay.text = NumberFormatter.FormatNumber(Cost);
-        levelDisplay.text = "Level " + (Level+freeLevels).ToString("N0");
+        levelDisplay.text = "Level " + Level.ToString("N0");
         levelSourceDisplay.text = level.ToString("N0") + " levels from upgrading";
         if (freeLevels > 0)
             levelSourceDisplay.text += "\n" + freeLevels.ToString("N0") + " free levels from dropping coins";
         if (diamond.diamondMultiLevels > 0)
             levelSourceDisplay.text += "\n" + diamond.diamondMultiLevels.ToString("N0") + " levels from diamond upgrade";
 
-        multiplierDisplay.text = CoinMulti.ToString("N2") + "x coins";
+        multiplierDisplay.text = NumberFormatter.FormatNumber(CoinMulti) + "x coins";
         if (UpgradeHandler.IsUpgradePurchased(1,3))
             multiplierDisplay.text += "\n" + NumberFormatter.FormatNumber(UpgradeHandler.GetEffectOfUpgrade(1,3)) + "x clickpoints";
         if (UpgradeHandler.IsUpgradePurchased(2,3))
             multiplierDisplay.text += "\n" + NumberFormatter.FormatNumber(UpgradeHandler.GetEffectOfUpgrade(2,3)) + "x experience";
-        /*if (upgradeHandler.IsUpgradePurchased(31))
+        if (UpgradeHandler.IsUpgradePurchased(5,3))
             multiplierDisplay.text += "\n+" + (Level * 0.75f).ToString("N1") + "% extra coin chance";
-        if (upgradeHandler.IsUpgradePurchased(45))
+        /*if (upgradeHandler.IsUpgradePurchased(45))
             multiplierDisplay.text += "\n" + DiamondCoinMulti.ToString("N3") + "x diamond coins";*/
     }
 }

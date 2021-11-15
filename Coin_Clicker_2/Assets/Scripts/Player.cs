@@ -7,8 +7,6 @@ public class Player : MonoBehaviour {
 
     private Multiplier multi;
     private ProgressBarHandler progressBar;
-
-    [SerializeField]
     private double coins;
     public double CoinsPerClick
     {
@@ -17,6 +15,7 @@ public class Player : MonoBehaviour {
             d *= UpgradeHandler.GetEffectOfUpgrade(0, 1)
                 * UpgradeHandler.GetEffectOfUpgrade(0, 2)
                 * UpgradeHandler.GetEffectOfUpgrade(0, 4)
+                * UpgradeHandler.GetEffectOfUpgrade(0, 5)
                 * progressBar.GetTotalMultiplier()
                 * multi.CoinMulti;
             return d;
@@ -40,7 +39,8 @@ public class Player : MonoBehaviour {
             d *= UpgradeHandler.GetEffectOfUpgrade(1, 0)
                 * UpgradeHandler.GetEffectOfUpgrade(1, 2)
                 * UpgradeHandler.GetEffectOfUpgrade(1, 3)
-                * UpgradeHandler.GetEffectOfUpgrade(1, 4);
+                * UpgradeHandler.GetEffectOfUpgrade(1, 4)
+                * UpgradeHandler.GetEffectOfUpgrade(1, 5);
             return d;
         }
     }
@@ -51,7 +51,7 @@ public class Player : MonoBehaviour {
         set
         {
             experience = value;
-            if (experience >= experienceNeededToLevelUp)
+            while (experience >= experienceNeededToLevelUp)
                 LevelUp();
             UpdateExperienceDisplays();
         }
@@ -176,7 +176,7 @@ public class Player : MonoBehaviour {
     void LevelUp() {
         experience -= experienceNeededToLevelUp;
         Coins += experienceNeededToLevelUp;
-        if (!(UnityEngine.Random.Range(0f, 1f) < UpgradeHandler.GetEffectOfUpgrade(2, 5)))
+        if (!(UnityEngine.Random.Range(0f, 1f) < UpgradeHandler.GetEffectOfUpgrade(2, 6)))
             experienceNeededToLevelUp *= 1.15;
         Level++;
     }

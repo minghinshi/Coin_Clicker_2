@@ -26,15 +26,8 @@ public class CoinDrop : MonoBehaviour
 
     public double ResourceMultiplier()
     {
-        double d = 160;
-        /*if (upgradeHandler.IsUpgradePurchased(26)) {
-            double clicks = auto.ClicksPerSec * 7.5;
-            if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(16))
-                clicks /= 1.15;
-            if (auto.SurgeDuration > 0)
-                clicks /= 2;
-            d += clicks;
-        }*/
+        double d = Autoclicker.instance.BaseClicksPerSec * 1000
+            * UpgradeHandler.GetEffectOfUpgrade(5, 4);
         return d;
     }
 
@@ -54,18 +47,15 @@ public class CoinDrop : MonoBehaviour
 
     public float TimePerDrop()
     {
-        double d = 60/* * upgradeHandler.GetTotalEffect(29)*/;
+        double d = 60 * UpgradeHandler.GetEffectOfUpgrade(5, 2);
         return Convert.ToSingle(d);
     }
 
     public int dropsLeft;
     public int TotalDrops()
     {
-        int i = 1;
-        /*double chance = upgradeHandler.GetTotalEffect(false, 27, 31);
-        if (UnityEngine.Random.Range(0f, 1f) < chance)
-            i++;*/
-        return i;
+        double p = 1 + UpgradeHandler.GetEffectOfUpgrade(5, 0) + UpgradeHandler.GetEffectOfUpgrade(5, 3);
+        return ConvertProbabilityToInt(p);
     }
 
     public int dropCount;
@@ -91,8 +81,8 @@ public class CoinDrop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (upgradeHandler.IsUpgradePurchased(25))
-            UpdateDropCooldown();*/
+        if (TierHandler.instance.GetTier() >= 5)
+            UpdateDropCooldown();
         if (!isConvertEnabled)
             convertText.text = "Sacrifice disabled";
         else
@@ -109,7 +99,7 @@ public class CoinDrop : MonoBehaviour
                 dropsLeft += TotalDrops();
             Drop();
             if (dropsLeft > 0)
-                dropCooldown += 0.5f;
+                dropCooldown += 1f;
             else
                 dropCooldown += TimePerDrop();
         }
@@ -118,7 +108,8 @@ public class CoinDrop : MonoBehaviour
     public void Drop()
     {
         dropsLeft--;
-        SpawnCoin();
+        for (int i = 0; i < 1 + ConvertProbabilityToInt(UpgradeHandler.GetEffectOfUpgrade(5, 1)); i++)
+            SpawnCoin();
         if (options.bell)
             coinDropDing.Play();
     }
@@ -132,7 +123,6 @@ public class CoinDrop : MonoBehaviour
         coinButton.onClick.AddListener(() => OnCoinClick(coinObject));
 
         Rigidbody2D rigidbody = coinObject.GetComponent<Rigidbody2D>();
-        /*rigidbody.gravityScale *= Convert.ToSingle(upgradeHandler.GetEffect(35));*/
 
         if (platinum)
         {
@@ -174,12 +164,10 @@ public class CoinDrop : MonoBehaviour
     void GiveResources()
     {
         player.Coins += (player.CoinsPerClick + player.BonusCoinsPerClick) * ResourceMultiplier();
-        /*if (upgradeHandler.IsUpgradePurchased(0))
-            player.Clickpoints += player.ClickpointsPerClick * ResourceMultiplier();
-        if (upgradeHandler.IsUpgradePurchased(3))
-            player.Experience += player.ExperiencePerClick * ResourceMultiplier();
-        if (upgradeHandler.IsUpgradePurchased(36))
-            CollectDiamondCoin();*/
+        player.Clickpoints += player.ClickpointsPerClick * ResourceMultiplier();
+        player.Experience += player.ExperiencePerClick * ResourceMultiplier();
+        if (TierHandler.instance.GetTier() >= 6)
+            CollectDiamondCoin();
     }
 
     void ConvertCoins()
@@ -199,11 +187,13 @@ public class CoinDrop : MonoBehaviour
     {
         clickedCoin = coinObject;
         GiveResources();
-        /*auto.SurgeDuration += upgradeHandler.GetEffect(28);
-        player.experienceNeededToLevelUp *= upgradeHandler.GetEffect(30);
-        if (UnityEngine.Random.Range(0f,1f) < upgradeHandler.GetEffect(34))
-            multi.freeLevels++;
-        dropCount += Convert.ToInt32(upgradeHandler.GetEffect(40));*/
+        if (UpgradeHandler.IsUpgradePurchased(4, 5))
+            Autoclicker.instance.SurgeDuration += 3;
+        if (UpgradeHandler.IsUpgradePurchased(2, 5))
+            player.experienceNeededToLevelUp /= 1.15;
+        if (UpgradeHandler.IsUpgradePurchased(3, 5))
+            Multiplier.instance.freeLevels++;
+        //dropCount += Convert.ToInt32(upgradeHandler.GetEffect(40));
         if (isConvertEnabled)
             ConvertCoins();
         if (options.collectionParticles)
@@ -216,5 +206,10 @@ public class CoinDrop : MonoBehaviour
     public void ToggleConvert()
     {
         isConvertEnabled = !isConvertEnabled;
+    }
+
+    public int ConvertProbabilityToInt(double probability) {
+        double roundUpProbability = probability - (int)probability;
+        return (int)probability + (UnityEngine.Random.Range(0f, 1f) < roundUpProbability ? 1 : 0);
     }
 }

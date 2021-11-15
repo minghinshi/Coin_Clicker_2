@@ -3680,7 +3680,7 @@ GameObject:
   - component: {fileID: 282863408}
   - component: {fileID: 282863407}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: DroppingCoinProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3755,10 +3755,10 @@ RectTransform:
   m_Father: {fileID: 1690826142}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000015259, y: -35}
-  m_SizeDelta: {x: 300, y: 5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 2.5}
+  m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &291237106
 GameObject:
@@ -4312,11 +4312,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: cde8f47d076bb0e4bb33a30f7e50bb42, type: 3}
-    m_FontSize: 28
+    m_FontSize: 24
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 2
-    m_MaxSize: 40
+    m_MaxSize: 24
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -5075,7 +5075,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 18
+    m_MaxSize: 20
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -6208,7 +6208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92c13d2811bf5944ab49039f99f70351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coins: 0
   experience: 0
   experienceNeededToLevelUp: 100
   diamondCoins: 0
@@ -7013,7 +7012,7 @@ GameObject:
   - component: {fileID: 655332152}
   - component: {fileID: 655332153}
   m_Layer: 5
-  m_Name: Multiplier
+  m_Name: Booster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7533,7 +7532,11 @@ MonoBehaviour:
     - {fileID: 1960847989}
   - nameOfFeatureToUnlock: Dropping Coins
     rowOfUpgrades: {fileID: 1476132060}
-    elementsToShow: []
+    elementsToShow:
+    - {fileID: 282863406}
+    - {fileID: 499021331}
+    - {fileID: 685545720}
+    - {fileID: 1814041860}
   - nameOfFeatureToUnlock: Diamond Upgrades
     rowOfUpgrades: {fileID: 1397672985}
     elementsToShow: []

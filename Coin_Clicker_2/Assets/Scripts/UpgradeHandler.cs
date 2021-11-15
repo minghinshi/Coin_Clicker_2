@@ -49,8 +49,12 @@ public class Upgrade{
                             description = "Increases the multiplier Boosters give to Coins.";
                             break;
                         case 4:
-                            effect = () => Autoclicker.instance.SpeedMultiplier;
+                            effect = () => Autoclicker.instance.SpeedMultiplierFromPower;
                             description = "Autoclicker speed multiplier is applied to Coins.";
+                            break;
+                        case 5:
+                            effect = () => 1 + Autoclicker.instance.SurgeDuration;
+                            description = "Coin gain is boosted depending on Autoclicker Surge time remaining.";
                             break;
                     }
                     break;
@@ -71,8 +75,12 @@ public class Upgrade{
                             description = "Boosters gives its multiplier to Clickpoints as well.";
                             break;
                         case 4:
-                            effect = () => Autoclicker.instance.SpeedMultiplier;
+                            effect = () => Autoclicker.instance.SpeedMultiplierFromPower;
                             description = "Autoclicker speed multiplier is applied to Clickpoints.";
+                            break;
+                        case 5:
+                            effect = () => 1 + Autoclicker.instance.SurgeDuration;
+                            description = "Clickpoint gain is boosted depending on Autoclicker Surge time remaining.";
                             break;
                     }
                     break;
@@ -93,10 +101,13 @@ public class Upgrade{
                             description = "Boosters gives some of its multiplier to Experience as well.";
                             break;
                         case 4:
-                            effect = () => Math.Sqrt(Autoclicker.instance.SpeedMultiplier);
+                            effect = () => Math.Sqrt(Autoclicker.instance.SpeedMultiplierFromPower);
                             description = "Part of the Autoclicker speed multiplier is applied to Experience.";
                             break;
                         case 5:
+                            description = "Collecting a Dropping Coin reduces the experience requirement to that of the previous level.";
+                            break;
+                        case 6:
                             effect = () => (Math.Log10(Player.instance.diamondCoins + 1) * 0.1);
                             description = "Diamond Coins provide a chance for the Experience requirement to not increase when you level up.";
                             hasAdditiveEffect = true;
@@ -115,12 +126,15 @@ public class Upgrade{
                             description = "Booster upgrades are discounted based on Clickpoints.";
                             break;
                         case 2:
-                            effect = () => Player.instance.Level * 0.01 + 1;
+                            effect = () => Player.instance.Level * 0.02 + 1;
                             description = "Levels increase the effectiveness of boosters.";
                             break;
                         case 4:
-                            effect = () => Autoclicker.instance.autoclickerPower + 1;
+                            effect = () => Math.Pow(Autoclicker.instance.autoclickerPower + 1, 2);
                             description = "Booster upgrades are discounted based on Autoclicker Power.";
+                            break;
+                        case 5:
+                            description = "Collecting a Dropping Coin grants a free Booster level.";
                             break;
                     }
                     break;
@@ -129,20 +143,52 @@ public class Upgrade{
                     switch (column)
                     {
                         case 0:
-                            effect = () => Math.Log10(Player.instance.Coins + 1) * 0.1 + 1;
-                            description = "Coins boost Autoclicker speed.";
+                            effect = () => Math.Log10(Player.instance.Coins + 1) * 0.5 + 1;
+                            description = "Coins boost Autoclicker Power.";
                             break;
                         case 1:
-                            description = "The Autoclicker becomes twice as fast when the coin is held.";
+                            description = "The Autoclicker becomes 5x as fast when the coin is held.";
                             break;
                         case 2:
-                            effect = () => 1 + Player.instance.Level * 0.01;
-                            description = "Levels boost Autoclicker speed.";
+                            effect = () => 1 + Player.instance.Level * 0.02;
+                            description = "Levels boost Autoclicker Power.";
                             break;
                         case 3:
                             effect = () => Multiplier.instance.Level * 0.5;
                             hasAdditiveEffect = true;
                             description = "Autoclicker Level is increased by 50% of the Booster Level.\nThis does not increase the cost of Autoclicker Levels.";
+                            break;
+                        case 5:
+                            description = "Unlock Autoclicker Surges.\nDuring an Autoclicker Surge, the Autoclicker runs 20x as fast.\nWhen a Dropping Coin is collected, 3 seconds is added to the Surge timer.";
+                            break;
+                    }
+                    break;
+                //Upgrades For Dropping Coins
+                case 5:
+                    switch (column)
+                    {
+                        case 0:
+                            effect = () => Math.Log10(Player.instance.Coins + 1) * 0.05;
+                            hasAdditiveEffect = true;
+                            description = "Coins increase the number of Dropping Coins per cycle.";
+                            break;
+                        case 1:
+                            effect = () => Math.Log10(Player.instance.Clickpoints + 1) * 0.05;
+                            hasAdditiveEffect = true;
+                            description = "Every time a Dropping Coin is spawned, more are spawned at the same time, based on Clickpoints.";
+                            break;
+                        case 2:
+                            effect = () => 1 + Player.instance.Level * 0.001;
+                            description = "Experience levels reduces the cooldown of Dropping Coins.";
+                            break;
+                        case 3:
+                            effect = () => Math.Pow(Multiplier.instance.Level, 0.1);
+                            hasAdditiveEffect = true;
+                            description = "Booster levels increase the number of Dropping Coins per cycle.";
+                            break;
+                        case 4:
+                            effect = () => Math.Log10(Autoclicker.instance.ClicksPerSec + 1) + 1;
+                            description = "Autoclicker speed further improves the amount of resources provided by Dropping Coins.";
                             break;
                     }
                     break;
