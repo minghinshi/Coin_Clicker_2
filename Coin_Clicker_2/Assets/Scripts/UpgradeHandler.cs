@@ -126,7 +126,7 @@ public class Upgrade{
                             description = "Booster upgrades are discounted based on Clickpoints.";
                             break;
                         case 2:
-                            effect = () => Player.instance.Level * 0.02 + 1;
+                            effect = () => Player.instance.Level * 0.01 + 1;
                             description = "Levels increase the effectiveness of boosters.";
                             break;
                         case 4:
@@ -143,14 +143,14 @@ public class Upgrade{
                     switch (column)
                     {
                         case 0:
-                            effect = () => Math.Log10(Player.instance.Coins + 1) * 0.5 + 1;
+                            effect = () => Math.Log10(Player.instance.Coins + 1) * 0.2 + 1;
                             description = "Coins boost Autoclicker Power.";
                             break;
                         case 1:
                             description = "The Autoclicker becomes 5x as fast when the coin is held.";
                             break;
                         case 2:
-                            effect = () => 1 + Player.instance.Level * 0.02;
+                            effect = () => 1 + Player.instance.Level * 0.01;
                             description = "Levels boost Autoclicker Power.";
                             break;
                         case 3:

@@ -26,7 +26,7 @@ public class CoinDrop : MonoBehaviour
 
     public double ResourceMultiplier()
     {
-        double d = Autoclicker.instance.BaseClicksPerSec * 1000
+        double d = Autoclicker.instance.BaseClicksPerSec * 3600
             * UpgradeHandler.GetEffectOfUpgrade(5, 4);
         return d;
     }

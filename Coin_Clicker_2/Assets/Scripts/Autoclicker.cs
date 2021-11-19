@@ -154,7 +154,7 @@ public class Autoclicker : MonoBehaviour
     }
 
     public void UpdateDisplays() {
-        statDisplay.text = NumberFormatter.FormatNumber(ClicksPerSec) + " clicks/s";
+        statDisplay.text = NumberFormatter.FormatNumber(ClicksPerSec) + " clicks / s";
         costDisplay.text = NumberFormatter.FormatNumber(Cost);
 
         if (tierHandler.GetTier() >= 4)
