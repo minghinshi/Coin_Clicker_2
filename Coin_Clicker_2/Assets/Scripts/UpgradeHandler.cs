@@ -159,7 +159,7 @@ public class Upgrade{
                             description = "Autoclicker Level is increased by 50% of the Booster Level.\nThis does not increase the cost of Autoclicker Levels.";
                             break;
                         case 5:
-                            description = "Unlock Autoclicker Surges.\nDuring an Autoclicker Surge, the Autoclicker runs 20x as fast.\nWhen a Dropping Coin is collected, 3 seconds is added to the Surge timer.";
+                            description = "Unlock Autoclicker Surges.\nDuring an Autoclicker Surge, the Autoclicker runs 60x as fast.\nWhen a Dropping Coin is collected, 1 second is added to the Surge timer.";
                             break;
                     }
                     break;
@@ -173,16 +173,16 @@ public class Upgrade{
                             description = "Coins increase the number of Dropping Coins per cycle.";
                             break;
                         case 1:
-                            effect = () => Math.Log10(Player.instance.Clickpoints + 1) * 0.05;
+                            effect = () => Math.Log10(Player.instance.Clickpoints + 1) * 0.1;
                             hasAdditiveEffect = true;
-                            description = "Every time a Dropping Coin is spawned, more are spawned at the same time, based on Clickpoints.";
+                            description = "Every time a Dropping Coin is spawned, more are spawned <color=yellow>at the same time</color>, based on Clickpoints.";
                             break;
                         case 2:
-                            effect = () => 1 + Player.instance.Level * 0.001;
+                            effect = () => 1 + Player.instance.Level * 0.002;
                             description = "Experience levels reduces the cooldown of Dropping Coins.";
                             break;
                         case 3:
-                            effect = () => Math.Pow(Multiplier.instance.Level, 0.1);
+                            effect = () => Math.Pow(Multiplier.instance.Level, 0.2) * 0.25;
                             hasAdditiveEffect = true;
                             description = "Booster levels increase the number of Dropping Coins per cycle.";
                             break;
@@ -197,7 +197,7 @@ public class Upgrade{
                 description += "\nCurrently: <color=#407fbf>{0}{1}</color>";
         }
         else {
-            upgradeImage.color = new Color(0.5f, 0.5f, 0.5f);
+            upgradeImage.color = new Color(44f / 255, 62f / 255, 80f / 255);
             tooltipDisplayer.enabled = false;
         }
 
@@ -234,7 +234,7 @@ public class Upgrade{
                 Player.instance.Coins -= UpgradeHandler.GetCost();
             isPurchased = true;
             UpgradeHandler.RegisterUpgrade();
-            upgradeImage.color = new Color(0f, 1f, 0f);
+            upgradeImage.color = new Color(46f / 255, 204f / 255, 113f / 255);
         }
     }
 }

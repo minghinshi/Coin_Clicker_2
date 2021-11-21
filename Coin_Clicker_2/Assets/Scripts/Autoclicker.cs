@@ -31,7 +31,7 @@ public class Autoclicker : MonoBehaviour
             if (UpgradeHandler.IsUpgradePurchased(4, 1) && Clicker.instance.coinIsHeld)
                 d *= 5;
             if (SurgeDuration > 0)
-                d *= 20;
+                d *= 60;
             return d;
         }
     }
@@ -121,7 +121,7 @@ public class Autoclicker : MonoBehaviour
             Autoclick();
 
         progressBar.value = 1 - timeUntilClick;
-        if (UpgradeHandler.IsUpgradePurchased(5, 4))
+        if (UpgradeHandler.IsUpgradePurchased(4, 5))
             UpdateSurgeDuration();
 
         /*if (upgradeHandler.IsUpgradePurchased(44))

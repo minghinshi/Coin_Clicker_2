@@ -122,8 +122,6 @@ public class CoinDrop : MonoBehaviour
         Button coinButton = coinObject.GetComponent<Button>();
         coinButton.onClick.AddListener(() => OnCoinClick(coinObject));
 
-        Rigidbody2D rigidbody = coinObject.GetComponent<Rigidbody2D>();
-
         if (platinum)
         {
             coinObject.GetComponent<Image>().sprite = platinumSprite;
@@ -188,7 +186,7 @@ public class CoinDrop : MonoBehaviour
         clickedCoin = coinObject;
         GiveResources();
         if (UpgradeHandler.IsUpgradePurchased(4, 5))
-            Autoclicker.instance.SurgeDuration += 3;
+            Autoclicker.instance.SurgeDuration += 1;
         if (UpgradeHandler.IsUpgradePurchased(2, 5))
             player.experienceNeededToLevelUp /= 1.15;
         if (UpgradeHandler.IsUpgradePurchased(3, 5))
