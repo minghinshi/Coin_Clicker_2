@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PurchaseHandler : MonoBehaviour
 {
@@ -18,8 +16,10 @@ public class PurchaseHandler : MonoBehaviour
         player = Player.instance;
     }
 
-    public bool IsAffordable(double cost) {
-        if (player.Coins >= cost) {
+    public bool IsAffordable(double cost)
+    {
+        if (player.Coins >= cost)
+        {
             player.Coins -= cost;
             return true;
         }

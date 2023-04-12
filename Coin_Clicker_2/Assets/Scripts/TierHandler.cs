@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 [Serializable]
-public class Feature {
+public class Feature
+{
     [SerializeField] string nameOfFeatureToUnlock;
     [SerializeField] GameObject rowOfUpgrades;
     [SerializeField] GameObject[] elementsToShow;
 
-    public Feature() { 
-    
+    public Feature()
+    {
+
     }
 
-    public Transform GetTransformOfRowOfUpgrades() {
+    public Transform GetTransformOfRowOfUpgrades()
+    {
         return rowOfUpgrades.transform;
     }
 
@@ -24,7 +26,8 @@ public class Feature {
         rowOfUpgrades.SetActive(true);
     }
 
-    public String GetTierName() {
+    public String GetTierName()
+    {
         return nameOfFeatureToUnlock;
     }
 }
@@ -40,9 +43,11 @@ public class TierHandler : MonoBehaviour
     [SerializeField] RectTransform upgradesRectTransform;
 
     int tier = 0;
-    double cost {
-        get {
-            return 10 * Math.Pow(1.15, Math.Pow(Math.Pow(tier + 1, 2) - 1, 2));
+    double cost
+    {
+        get
+        {
+            return UpgradeHandler.GetCostOfNthUpgrade(tier * (tier + 2));
         }
     }
 
@@ -64,15 +69,17 @@ public class TierHandler : MonoBehaviour
                 "and further boost your coins.\n" +
                 "<color=red>This also increases your upgrade cost!</color>\n" +
                 "<color=lime>Next: Unlock {0}.</color>\n" +
-                "<color=yellow>Cost: {1} coins.</color>", features[tier+1].GetTierName(), NumberFormatter.FormatNumber(cost));
+                "<color=yellow>Cost: {1} coins.</color>", features[tier + 1].GetTierName(), NumberFormatter.FormatNumber(cost));
         });
     }
 
-    public void AttemptPurchase() {
+    public void AttemptPurchase()
+    {
         if (purchaseHandler.IsAffordable(cost)) BuyTier();
     }
 
-    public void BuyTier() {
+    public void BuyTier()
+    {
         tier++;
         features[tier].ActivateFeature();
         TierDisplay.text = "Tier " + tier;
@@ -80,15 +87,18 @@ public class TierHandler : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(upgradesRectTransform);
     }
 
-    public Feature GetFeature(int rowNumber) {
+    public Feature GetFeature(int rowNumber)
+    {
         return features[rowNumber];
     }
 
-    public int GetNumberOfFeatures() {
+    public int GetNumberOfFeatures()
+    {
         return features.Length;
     }
 
-    public int GetTier() {
+    public int GetTier()
+    {
         return tier;
     }
 }

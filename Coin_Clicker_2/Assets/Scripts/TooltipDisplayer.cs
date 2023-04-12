@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -17,7 +15,8 @@ public class TooltipDisplayer : MonoBehaviour, IPointerEnterHandler, IPointerExi
             Tooltip.instance.DisplayTooltip(stringToDisplay());
     }
 
-    public void SetStringToDisplay(Func<string> function) {
+    public void SetStringToDisplay(Func<string> function)
+    {
         stringToDisplay = function;
     }
 

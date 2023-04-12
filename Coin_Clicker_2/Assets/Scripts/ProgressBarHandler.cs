@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class ProgressBarHandler : MonoBehaviour
 {
@@ -19,7 +16,8 @@ public class ProgressBarHandler : MonoBehaviour
 
     public int speedMultiLevel;
     public int speedMultiLevel2;
-    public float SpeedMulti() {
+    public float SpeedMulti()
+    {
         float f = speedMultiLevel * speedMultiLevel2;
         /*if (clicker.coinIsHeld && upgradeHandler.IsUpgradePurchased(52))
             f *= 2;*/
@@ -29,15 +27,18 @@ public class ProgressBarHandler : MonoBehaviour
     public Text TotalMultiDisplay;
     public Text SpeedDisplay;
 
-    public double GetTotalMultiplier() {
+    public double GetTotalMultiplier()
+    {
         double d = 1;
-        foreach (double multiplier in barMulti) {
+        foreach (double multiplier in barMulti)
+        {
             d *= multiplier;
         }
         return d;
     }
 
-    string FloatToTime(float f) {
+    string FloatToTime(float f)
+    {
         if (f >= 31557600f)
             return Mathf.Floor(f / 31557600f).ToString("N0") + " yr";
         else if (f >= 604800f)
@@ -94,8 +95,10 @@ public class ProgressBarHandler : MonoBehaviour
         SpeedDisplay.text = NumberFormatter.FormatNumber(SpeedMulti()) + "x speed";
     }
 
-    public void BuySpeedMulti() {
-        if (player.diamondCoins >= 50000) {
+    public void BuySpeedMulti()
+    {
+        if (player.diamondCoins >= 50000)
+        {
             player.diamondCoins -= 50000;
             speedMultiLevel++;
         }

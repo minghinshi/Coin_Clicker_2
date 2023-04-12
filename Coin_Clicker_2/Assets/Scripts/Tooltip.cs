@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 public class Tooltip : MonoBehaviour
 {
@@ -29,10 +27,11 @@ public class Tooltip : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        transform.position = Input.mousePosition + new Vector3(20f,10f);
+        transform.position = Input.mousePosition + new Vector3(20f, 10f);
     }
 
-    public void DisplayTooltip(string Text) {
+    public void DisplayTooltip(string Text)
+    {
         tooltipText.text = Text;
         transform.localScale = new Vector3(1f, 1f);
         if (!isDisplayingTooltip)
@@ -42,11 +41,13 @@ public class Tooltip : MonoBehaviour
         }
     }
 
-    public void DisplayTooltip(string Text, params object[] args) {
+    public void DisplayTooltip(string Text, params object[] args)
+    {
         DisplayTooltip(string.Format(Text, args));
     }
 
-    public void SetCoinsTooltip() {
+    public void SetCoinsTooltip()
+    {
         List<object> objects = new List<object>();
 
         /*if (upgradeHandler.IsUpgradePurchased(1))
@@ -73,7 +74,8 @@ public class Tooltip : MonoBehaviour
         objects.Add(multi.CoinMulti);
     }
 
-    public void HideTooltip() {
+    public void HideTooltip()
+    {
         tooltipText.text = "";
         transform.localScale = new Vector3(0f, 0f);
         isDisplayingTooltip = false;

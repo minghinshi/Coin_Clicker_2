@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class NavigationButton : MonoBehaviour
 {
@@ -58,8 +55,10 @@ public class NavigationButton : MonoBehaviour
         }
     }*/
 
-    public void Toggle() {
-        foreach (CanvasGroup panel in bar.panelsToNavigate) {
+    public void Toggle()
+    {
+        foreach (CanvasGroup panel in bar.panelsToNavigate)
+        {
             panel.alpha = 0;
             panel.blocksRaycasts = false;
             panel.interactable = false;
@@ -69,5 +68,5 @@ public class NavigationButton : MonoBehaviour
         targetPanel.interactable = true;
     }
 
-    
+
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NavigationBar : MonoBehaviour
 {
@@ -22,6 +20,6 @@ public class NavigationBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using System;
 using UnityEngine.UI;
 
-public class Upgrade{
+public class Upgrade
+{
     int row;
     int column;
     bool isPurchased = false;
@@ -17,7 +17,8 @@ public class Upgrade{
     Func<double> effect;
     string description;
 
-    public Upgrade(int r, int c, GameObject go) {
+    public Upgrade(int r, int c, GameObject go)
+    {
         row = r;
         column = c;
 
@@ -37,11 +38,11 @@ public class Upgrade{
                     switch (column)
                     {
                         case 1:
-                            effect = () => Math.Max(Math.Pow(Player.instance.Clickpoints, 0.2), 1);
+                            effect = () => Math.Log10(Player.instance.Clickpoints + 1) / 4 + 1;
                             description = "Clickpoints boost Coin gain.";
                             break;
                         case 2:
-                            effect = () => Player.instance.Level * 0.15 + 1;
+                            effect = () => Player.instance.Level * 0.1 + 1;
                             description = "Levels boost Coin gain.";
                             break;
                         case 3:
@@ -63,11 +64,11 @@ public class Upgrade{
                     switch (column)
                     {
                         case 0:
-                            effect = () => Math.Max(Math.Pow(Player.instance.Coins, 0.2), 1);
+                            effect = () => Math.Log10(Player.instance.Coins + 1) / 4 + 1;
                             description = "Coins boost Clickpoint gain.";
                             break;
                         case 2:
-                            effect = () => Player.instance.Level * 0.15 + 1;
+                            effect = () => Player.instance.Level * 0.1 + 1;
                             description = "Levels boost Clickpoint gain.";
                             break;
                         case 3:
@@ -89,16 +90,16 @@ public class Upgrade{
                     switch (column)
                     {
                         case 0:
-                            effect = () => Math.Max(Math.Pow(Player.instance.Coins, 0.1), 1);
+                            effect = () => Math.Log10(Player.instance.Coins + 1) / 4 + 1;
                             description = "Coins boost Experience gain.";
                             break;
                         case 1:
-                            effect = () => Math.Max(Math.Pow(Player.instance.Clickpoints, 0.1), 1);
+                            effect = () => Math.Log10(Player.instance.Clickpoints + 1) / 4 + 1;
                             description = "Clickpoints boost Experience gain.";
                             break;
                         case 3:
-                            effect = () => Math.Sqrt(Multiplier.instance.GetMultiplier());
-                            description = "Boosters gives some of its multiplier to Experience as well.";
+                            effect = () => Multiplier.instance.GetMultiplier();
+                            description = "Boosters gives its multiplier to Experience as well.";
                             break;
                         case 4:
                             effect = () => Math.Sqrt(Autoclicker.instance.SpeedMultiplierFromPower);
@@ -119,14 +120,14 @@ public class Upgrade{
                     switch (column)
                     {
                         case 0:
-                            description = "Boosters become 15% more expensive per upgrade, instead of 30%.\nThis applies to all previous Boosters upgrades.";
+                            description = "Boosters become 1.5x more expensive per upgrade, instead of 2x.\nThis applies to all previous Boosters upgrades.";
                             break;
                         case 1:
-                            effect = () => Math.Max(Player.instance.Clickpoints / 1e4, 1);
+                            effect = () => 1 + Player.instance.Clickpoints / 1e3;
                             description = "Booster upgrades are discounted based on Clickpoints.";
                             break;
                         case 2:
-                            effect = () => Player.instance.Level * 0.01 + 1;
+                            effect = () => Player.instance.Level * 0.02 + 1;
                             description = "Levels increase the effectiveness of boosters.";
                             break;
                         case 4:
@@ -196,7 +197,8 @@ public class Upgrade{
             if (effect != null)
                 description += "\nCurrently: <color=#407fbf>{0}{1}</color>";
         }
-        else {
+        else
+        {
             upgradeImage.color = new Color(44f / 255, 62f / 255, 80f / 255);
             tooltipDisplayer.enabled = false;
         }
@@ -205,32 +207,38 @@ public class Upgrade{
         tooltipDisplayer.SetStringToDisplay(delegate
         {
             if (effect != null)
-                return string.Format(description, (hasAdditiveEffect ? "+" : "x"), NumberFormatter.FormatNumber(effect()));
+                return string.Format(description, (hasAdditiveEffect ? "+" : "x"), NumberFormatter.FormatNumber(effect(), 2));
             else
                 return description;
         });
     }
 
-    public int GetTierRequired() {
+    public int GetTierRequired()
+    {
         return Math.Max(row, column);
     }
 
-    public double GetEffect() {
+    public double GetEffect()
+    {
         return (isPurchased ? effect() : (hasAdditiveEffect ? 0 : 1));
     }
 
-    public bool IsUpgradePurchased() {
+    public bool IsUpgradePurchased()
+    {
         return isPurchased;
     }
 
-    public void TryToSetUpgradeAsVisible(int tier) {
+    public void TryToSetUpgradeAsVisible(int tier)
+    {
         if (tier >= GetTierRequired() && !upgradeGameObject.activeInHierarchy)
             upgradeGameObject.SetActive(true);
     }
 
-    public void PurchaseUpgrade(bool ignoreCost = false) {
-        if (!isPurchased && (Player.instance.Coins >= UpgradeHandler.GetCost() || ignoreCost)) {
-            if(!ignoreCost)
+    public void PurchaseUpgrade(bool ignoreCost = false)
+    {
+        if (!isPurchased && (Player.instance.Coins >= UpgradeHandler.GetCost() || ignoreCost))
+        {
+            if (!ignoreCost)
                 Player.instance.Coins -= UpgradeHandler.GetCost();
             isPurchased = true;
             UpgradeHandler.RegisterUpgrade();
@@ -247,10 +255,6 @@ public class UpgradeHandler : MonoBehaviour
     static int numberOfPurchasedUpgrades = 0;
     [SerializeField] GameObject upgradePrefab;
     [SerializeField] Text upgradeCostDisplay;
-
-    public static double GetCost() {
-        return 10 * Math.Pow(1.15, Math.Pow(numberOfPurchasedUpgrades + tierHandler.GetTier(), 2));
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -278,20 +282,24 @@ public class UpgradeHandler : MonoBehaviour
         upgradeCostDisplay.text = NumberFormatter.FormatNumber(GetCost());
     }
 
-    public static void SetUpgradesAsVisible(int tier) {
+    public static void SetUpgradesAsVisible(int tier)
+    {
         foreach (Upgrade upgrade in listOfUpgrades)
             upgrade.TryToSetUpgradeAsVisible(tier);
     }
 
-    public static double GetEffectOfUpgrade(int row, int col) {
+    public static double GetEffectOfUpgrade(int row, int col)
+    {
         try { return gridOfUpgrades[row][col].GetEffect(); }
-        catch (NullReferenceException) {
+        catch (NullReferenceException)
+        {
             Debug.Log(string.Format("No upgrade of r{0}c{1} found, returning default value of 1", row, col));
-            return 1; 
+            return 1;
         }
     }
 
-    public static Upgrade[][] GetGridOfUpgrades() {
+    public static Upgrade[][] GetGridOfUpgrades()
+    {
         return gridOfUpgrades;
     }
 
@@ -300,7 +308,23 @@ public class UpgradeHandler : MonoBehaviour
         return gridOfUpgrades[row][col].IsUpgradePurchased();
     }
 
-    public static void RegisterUpgrade() {
+    public static void RegisterUpgrade()
+    {
         numberOfPurchasedUpgrades++;
+    }
+
+    public static double GetCostOfNthUpgrade(int n)
+    {
+        return 10 * Math.Pow(1 + n * 0.1, n);
+    }
+
+    public static double GetCost()
+    {
+        return GetCostOfNthUpgrade(GetPurchaseCount());
+    }
+
+    private static int GetPurchaseCount()
+    {
+        return numberOfPurchasedUpgrades + tierHandler.GetTier();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class SaveLoad : MonoBehaviour
 {
@@ -21,7 +20,8 @@ public class SaveLoad : MonoBehaviour
         instance = this;
     }
 
-    void Start() {
+    void Start()
+    {
         player = Player.instance;
         tierHandler = TierHandler.instance;
         LoadGameData();
@@ -34,11 +34,14 @@ public class SaveLoad : MonoBehaviour
             SaveGameData();
     }
 
-    public static string Load(string key, string defaultData) {
-        if (PlayerPrefs.HasKey(key)) {
+    public static string Load(string key, string defaultData)
+    {
+        if (PlayerPrefs.HasKey(key))
+        {
             return PlayerPrefs.GetString(key);
         }
-        else {
+        else
+        {
             PlayerPrefs.SetString(key, defaultData);
             return defaultData;
         }
@@ -49,7 +52,8 @@ public class SaveLoad : MonoBehaviour
         PlayerPrefs.SetString(key, value);
     }
 
-    public void SaveGameData() {
+    public void SaveGameData()
+    {
         //Upgrades
         Upgrade[][] gridOfUpgrades = UpgradeHandler.GetGridOfUpgrades();
         for (int row = 0; row < gridOfUpgrades.Length; row++)
@@ -105,12 +109,13 @@ public class SaveLoad : MonoBehaviour
         timeUntilSave = 60f;
     }
 
-    public void LoadGameData() {
+    public void LoadGameData()
+    {
         //Main Stats (Related to gameplay)
         player.Coins = double.Parse(Load("Coins", "0"));
         player.Clickpoints = double.Parse(Load("Clickpoints", "0"));
         player.Experience = double.Parse(Load("Experience", "0"));
-        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "100"));
+        player.experienceNeededToLevelUp = double.Parse(Load("ExperienceReq", "10"));
         multiplier.level = int.Parse(Load("MultiLevel", "0"));
         player.Level = int.Parse(Load("Level", "0"));
         autoclicker.autoclickerLevel = int.Parse(Load("AutoclickerLevel", "0"));
@@ -126,7 +131,8 @@ public class SaveLoad : MonoBehaviour
 
         //Tier
         int targetTier = int.Parse(Load("Tier", "0"));
-        while (tierHandler.GetTier() < targetTier) {
+        while (tierHandler.GetTier() < targetTier)
+        {
             tierHandler.BuyTier();
         }
 
@@ -146,7 +152,7 @@ public class SaveLoad : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             progressBar.barMulti[i] = double.Parse(Load("ProgressBar" + i + "Multi", "1"));
-            progressBar.timeLeft[i] = float.Parse(Load("ProgressBar" + i + "Time", Mathf.Pow(100,i).ToString("R")));
+            progressBar.timeLeft[i] = float.Parse(Load("ProgressBar" + i + "Time", Mathf.Pow(100, i).ToString("R")));
         }
         progressBar.speedMultiLevel = int.Parse(Load("SpeedMultiLevel", "1"));
         progressBar.speedMultiLevel2 = int.Parse(Load("SpeedMultiLevel2", "1"));

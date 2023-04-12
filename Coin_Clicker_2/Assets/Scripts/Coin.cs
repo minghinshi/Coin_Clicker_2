@@ -1,25 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
-public class Coin : MonoBehaviour {
+public class Coin : MonoBehaviour
+{
 
     public double coinValue;
 
     public GameObject DisplayPrefab;
 
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (transform.position.y <= 200f) {
+    // Use this for initialization
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (transform.position.y <= 200f)
+        {
             GameObject Display = Instantiate(DisplayPrefab, transform.position, Quaternion.identity, transform.parent);
             Display.GetComponent<CoinDisplay>().display.text = NumberFormatter.FormatNumber(coinValue);
 
             Destroy(gameObject);
         }
-	}
+    }
 }

@@ -17,7 +17,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = 1 + 0.15 * TotalLevel;
+            double d = TotalLevel;
             d *= SpeedMultiplierFromPower;
             return d;
         }
@@ -48,7 +48,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = 10 * Math.Pow(1.15, autoclickerLevel);
+            double d = 10 * Math.Pow(2, autoclickerLevel);
             return d;
         }
     }
@@ -63,7 +63,8 @@ public class Autoclicker : MonoBehaviour
             return d;
         }
     }
-    public double SpeedMultiplierFromPower {
+    public double SpeedMultiplierFromPower
+    {
         get
         {
             return Math.Pow(1 + autoclickerPower * 0.001, 0.5);
@@ -80,13 +81,16 @@ public class Autoclicker : MonoBehaviour
         }
     }
 
-    public double SurgeDuration {
+    public double SurgeDuration
+    {
         get => surgeDuration;
-        set {
+        set
+        {
             surgeDuration = value;
-            if(surgeDuration > 0)
+            if (surgeDuration > 0)
                 surgeDisplay.text = "Autoclicker (" + surgeDuration.ToString("N1") + "s)";
-            if (surgeDuration < 0) {
+            if (surgeDuration < 0)
+            {
                 surgeDuration = 0;
                 surgeDisplay.text = "Autoclicker";
             }
@@ -129,21 +133,25 @@ public class Autoclicker : MonoBehaviour
                 drop.platinum = true;*/
     }
 
-    void Autoclick() {
+    void Autoclick()
+    {
         timeUntilClick++;
         clicker.Click(ClicksPerTick);
- 
+
         if (tierHandler.GetTier() >= 4)
-            autoclickerPower += PowerIncrease* ClicksPerTick;
+            autoclickerPower += PowerIncrease * ClicksPerTick;
     }
 
-    void UpdateSurgeDuration() {
+    void UpdateSurgeDuration()
+    {
         if (SurgeDuration > 0)
             SurgeDuration -= Time.deltaTime;
     }
 
-    public void Upgrade() {
-        while (player.Clickpoints >= Cost) {
+    public void Upgrade()
+    {
+        while (player.Clickpoints >= Cost)
+        {
             player.Clickpoints -= Cost;
             autoclickerLevel++;
             if (!Input.GetKey(KeyCode.LeftShift))
@@ -153,11 +161,12 @@ public class Autoclicker : MonoBehaviour
         UpdateDisplays();
     }
 
-    public void UpdateDisplays() {
+    public void UpdateDisplays()
+    {
         statDisplay.text = NumberFormatter.FormatNumber(ClicksPerSec) + " clicks / s";
         costDisplay.text = NumberFormatter.FormatNumber(Cost);
 
         if (tierHandler.GetTier() >= 4)
-            statDisplay.text += String.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplierFromPower));
+            statDisplay.text += string.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplierFromPower));
     }
 }

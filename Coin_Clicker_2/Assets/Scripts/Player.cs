@@ -2,7 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
     public static Player instance;
 
     private Multiplier multi;
@@ -10,7 +11,8 @@ public class Player : MonoBehaviour {
     private double coins;
     public double CoinsPerClick
     {
-        get {
+        get
+        {
             double d = 1;
             d *= UpgradeHandler.GetEffectOfUpgrade(0, 1)
                 * UpgradeHandler.GetEffectOfUpgrade(0, 2)
@@ -32,7 +34,8 @@ public class Player : MonoBehaviour {
         }
     }
     private double clickpoints;
-    public double ClickpointsPerClick {
+    public double ClickpointsPerClick
+    {
         get
         {
             double d = 1;
@@ -46,7 +49,8 @@ public class Player : MonoBehaviour {
     }
 
     public double experience;
-    public double Experience {
+    public double Experience
+    {
         get => experience;
         set
         {
@@ -69,23 +73,28 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public double Coins {
+    public double Coins
+    {
         get => coins;
-        set {
+        set
+        {
             coins = value;
             coinsDisplay.text = NumberFormatter.FormatNumber(value);
         }
     }
 
-    public double Clickpoints {
+    public double Clickpoints
+    {
         get => clickpoints;
-        set {
+        set
+        {
             clickpoints = value;
             clickpointsDisplay.text = NumberFormatter.FormatNumber(Clickpoints);
         }
     }
 
-    public int Level {
+    public int Level
+    {
         get => level;
         set
         {
@@ -134,24 +143,28 @@ public class Player : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         multi = Multiplier.instance;
         progressBar = ProgressBarHandler.instance;
     }
-	
-    public void UpdateDisplays() {
+
+    public void UpdateDisplays()
+    {
         /*if (IsUpgradePurchased(3))
             UpdateExperienceDisplays();*/
         /*if (IsUpgradePurchased(36))
             diamondDisplay.text = diamondCoins.ToString("N1");*/
     }
 
-    void UpdateExperienceDisplays() {
+    void UpdateExperienceDisplays()
+    {
         experienceBar.value = Convert.ToSingle(experience / experienceNeededToLevelUp);
         experienceDisplay.text = NumberFormatter.FormatNumber(experience) + " / " + NumberFormatter.FormatNumber(experienceNeededToLevelUp);
     }
 
-    public void UnlockCoinDrop() {
+    public void UnlockCoinDrop()
+    {
         coinDropBar.gameObject.SetActive(true);
         foreach (GameObject option in ExtraOptions)
         {
@@ -167,17 +180,19 @@ public class Player : MonoBehaviour {
         //UnlockNavigationTab(2);
     }
 
-    public void UnlockProgressBars() {
+    public void UnlockProgressBars()
+    {
         PanelSwitcher.SetActive(true);
         ProgressBarPanel.SetActive(true);
         //UnlockNavigationTab(3);
     }
 
-    void LevelUp() {
+    void LevelUp()
+    {
         experience -= experienceNeededToLevelUp;
         Coins += experienceNeededToLevelUp;
         if (!(UnityEngine.Random.Range(0f, 1f) < UpgradeHandler.GetEffectOfUpgrade(2, 6)))
-            experienceNeededToLevelUp *= 1.15;
+            experienceNeededToLevelUp *= 2;
         Level++;
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Options : MonoBehaviour
@@ -36,10 +34,11 @@ public class Options : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    public void ToggleMusic() {
+    public void ToggleMusic()
+    {
         music = (!music);
         UpdateOptions();
     }
@@ -86,7 +85,8 @@ public class Options : MonoBehaviour
         UpdateOptions();
     }
 
-    public void UpdateOptions() {
+    public void UpdateOptions()
+    {
         if (music)
             musicText.text = "Music: On";
         else

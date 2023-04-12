@@ -206,7 +206,8 @@ public class CoinDrop : MonoBehaviour
         isConvertEnabled = !isConvertEnabled;
     }
 
-    public int ConvertProbabilityToInt(double probability) {
+    public int ConvertProbabilityToInt(double probability)
+    {
         double roundUpProbability = probability - (int)probability;
         return (int)probability + (UnityEngine.Random.Range(0f, 1f) < roundUpProbability ? 1 : 0);
     }

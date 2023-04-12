@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class DiamondUpgrades : MonoBehaviour
@@ -10,7 +8,8 @@ public class DiamondUpgrades : MonoBehaviour
     private Player player;
     private CoinDrop coinDrop;
 
-    public double autoPrice {
+    public double autoPrice
+    {
         get
         {
             if (diamondAutoLevels >= 999)
@@ -70,8 +69,10 @@ public class DiamondUpgrades : MonoBehaviour
             DropPriceDisplay.text = dropPrice.ToString("N0");*/
     }
 
-    public void BuyAuto() {
-        if (player.diamondCoins >= autoPrice) {
+    public void BuyAuto()
+    {
+        if (player.diamondCoins >= autoPrice)
+        {
             player.diamondCoins -= autoPrice;
             diamondAutoLevels++;
         }
