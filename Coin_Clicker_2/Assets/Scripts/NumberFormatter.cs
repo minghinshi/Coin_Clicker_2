@@ -26,7 +26,7 @@ public class NumberFormatter : MonoBehaviour
     {
         int magnitude = Convert.ToInt32(Math.Floor(Math.Log10(number)));
         string suffix = suffixes[Mathf.FloorToInt((magnitude - 3) / 3f)];
-        return (number / Math.Pow(10, magnitude - magnitude % 3)).ToString("N3") + suffix;
+        return (number / Math.Pow(10, magnitude - magnitude % 3)).ToString("N3") + " " + suffix;
     }
 
     static string Scientific(double number)

@@ -27,11 +27,11 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            double d = BaseClicksPerSec;
+            double d = BaseClicksPerSec * UpgradeHandler.GetEffectOfUpgrade(4, 2);
             if (UpgradeHandler.IsUpgradePurchased(4, 1) && Clicker.instance.coinIsHeld)
-                d *= 5;
+                d *= 3;
             if (SurgeDuration > 0)
-                d *= 60;
+                d *= 10;
             return d;
         }
     }
@@ -58,8 +58,7 @@ public class Autoclicker : MonoBehaviour
         get
         {
             double d = 1
-                * UpgradeHandler.GetEffectOfUpgrade(4, 0)
-                * UpgradeHandler.GetEffectOfUpgrade(4, 2);
+                * UpgradeHandler.GetEffectOfUpgrade(4, 0);
             return d;
         }
     }
@@ -67,7 +66,7 @@ public class Autoclicker : MonoBehaviour
     {
         get
         {
-            return Math.Pow(1 + autoclickerPower * 0.001, 0.5);
+            return 1 + Math.Cbrt(autoclickerPower * 0.001);
         }
     }
 
@@ -167,6 +166,6 @@ public class Autoclicker : MonoBehaviour
         costDisplay.text = NumberFormatter.FormatNumber(Cost);
 
         if (tierHandler.GetTier() >= 4)
-            statDisplay.text += string.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplierFromPower));
+            statDisplay.text += string.Format("\n<color=#90ee90>{0}</color> Power\n=> <color=#90ee90>{1}x</color> Speed", NumberFormatter.FormatNumber(autoclickerPower), NumberFormatter.FormatNumber(SpeedMultiplierFromPower, 2));
     }
 }

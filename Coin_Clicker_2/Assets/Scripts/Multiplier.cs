@@ -101,7 +101,7 @@ public class Multiplier : MonoBehaviour
         if (UpgradeHandler.IsUpgradePurchased(2, 3))
             multiplierDisplay.text += "\n" + NumberFormatter.FormatNumber(UpgradeHandler.GetEffectOfUpgrade(2, 3), 2) + "x experience";
         if (UpgradeHandler.IsUpgradePurchased(5, 3))
-            multiplierDisplay.text += "\n+" + (Level * 0.75f).ToString("N1") + "% extra coin chance";
+            multiplierDisplay.text += "\n+" + NumberFormatter.FormatNumber(UpgradeHandler.GetEffectOfUpgrade(5, 3), 2) + " dropping coins per cycle";
         /*if (upgradeHandler.IsUpgradePurchased(45))
             multiplierDisplay.text += "\n" + DiamondCoinMulti.ToString("N3") + "x diamond coins";*/
     }

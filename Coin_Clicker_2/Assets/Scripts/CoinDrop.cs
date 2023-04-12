@@ -26,7 +26,7 @@ public class CoinDrop : MonoBehaviour
 
     public double ResourceMultiplier()
     {
-        double d = Autoclicker.instance.BaseClicksPerSec * 3600
+        double d = Autoclicker.instance.BaseClicksPerSec * 600
             * UpgradeHandler.GetEffectOfUpgrade(5, 4);
         return d;
     }
@@ -47,14 +47,14 @@ public class CoinDrop : MonoBehaviour
 
     public float TimePerDrop()
     {
-        double d = 60 * UpgradeHandler.GetEffectOfUpgrade(5, 2);
+        double d = 60 / UpgradeHandler.GetEffectOfUpgrade(5, 2);
         return Convert.ToSingle(d);
     }
 
     public int dropsLeft;
     public int TotalDrops()
     {
-        double p = 1 + UpgradeHandler.GetEffectOfUpgrade(5, 0) + UpgradeHandler.GetEffectOfUpgrade(5, 3);
+        double p = 1 + UpgradeHandler.GetEffectOfUpgrade(5, 1) + UpgradeHandler.GetEffectOfUpgrade(5, 3);
         return ConvertProbabilityToInt(p);
     }
 
@@ -108,7 +108,7 @@ public class CoinDrop : MonoBehaviour
     public void Drop()
     {
         dropsLeft--;
-        for (int i = 0; i < 1 + ConvertProbabilityToInt(UpgradeHandler.GetEffectOfUpgrade(5, 1)); i++)
+        for (int i = 0; i < 1 + ConvertProbabilityToInt(UpgradeHandler.GetEffectOfUpgrade(5, 0)); i++)
             SpawnCoin();
         if (options.bell)
             coinDropDing.Play();
@@ -116,8 +116,8 @@ public class CoinDrop : MonoBehaviour
 
     void SpawnCoin()
     {
-        Vector3 randomPosOffset = new Vector3(UnityEngine.Random.Range(-300f, 300f), 0);
-        GameObject coinObject = (GameObject)Instantiate(coinInstance, transform.position + randomPosOffset, Quaternion.identity, transform.parent);
+        Vector3 randomPosOffset = new(UnityEngine.Random.Range(-300f, 300f), 0);
+        GameObject coinObject = Instantiate(coinInstance, transform.position + randomPosOffset, Quaternion.identity, transform.parent);
 
         Button coinButton = coinObject.GetComponent<Button>();
         coinButton.onClick.AddListener(() => OnCoinClick(coinObject));
@@ -186,9 +186,9 @@ public class CoinDrop : MonoBehaviour
         clickedCoin = coinObject;
         GiveResources();
         if (UpgradeHandler.IsUpgradePurchased(4, 5))
-            Autoclicker.instance.SurgeDuration += 1;
+            Autoclicker.instance.SurgeDuration += 10;
         if (UpgradeHandler.IsUpgradePurchased(2, 5))
-            player.experienceNeededToLevelUp /= 1.15;
+            player.experienceNeededToLevelUp *= 0.8;
         if (UpgradeHandler.IsUpgradePurchased(3, 5))
             Multiplier.instance.freeLevels++;
         //dropCount += Convert.ToInt32(upgradeHandler.GetEffect(40));
